@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.mephistosoftware.rester.model.Person;
-import com.mephistosoftware.rester.repository.AppUserRepository;
+import com.mephistosoftware.rester.repository.PersonRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,13 +18,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class PersonDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
-	private AppUserRepository userRepository;
+	private PersonRepository userRepository;
 
 	@Autowired
-	public UserDetailsServiceImpl(AppUserRepository userRepository) {
+	public PersonDetailsServiceImpl(PersonRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
@@ -43,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		boolean credentialsNonExpired = true;
 		boolean accountNonLocked = true;
 		
-		return new AppUser(domainUser.getUsername(), domainUser.getPassword(), enabled, accountNonExpired,
+		return new Person(domainUser.getUsername(), domainUser.getPassword(), enabled, accountNonExpired,
 				credentialsNonExpired, accountNonLocked, getAuthorities(domainUser.getRole().getRole()));
 		*/
 	}

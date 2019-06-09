@@ -21,12 +21,12 @@ import static com.mephistosoftware.rester.security.SecurityConstants.SIGN_UP_URL
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private UserDetailsServiceImpl userDetailsService;
+	private PersonDetailsServiceImpl userDetailsService;
 	
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
-	public WebSecurity(UserDetailsServiceImpl userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public WebSecurity(PersonDetailsServiceImpl userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.userDetailsService = userDetailsService;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}

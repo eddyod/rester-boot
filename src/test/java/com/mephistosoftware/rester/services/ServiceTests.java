@@ -1,7 +1,5 @@
 package com.mephistosoftware.rester.services;
 
-import static java.util.Collections.emptyList;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mephistosoftware.rester.model.Person;
-import com.mephistosoftware.rester.repository.AppUserRepository;
+import com.mephistosoftware.rester.repository.PersonRepository;
 
 @RunWith(SpringRunner.class)
 
@@ -24,7 +22,7 @@ import com.mephistosoftware.rester.repository.AppUserRepository;
 public class ServiceTests {
 
 	@Autowired
-	AppUserRepository appUserRepository;
+	PersonRepository appUserRepository;
 
 	@Test
 	public void testCreateReadDelete() {

@@ -82,17 +82,6 @@ public class Schedule extends AuditModel {
 		this.person = person;
 	}
 
-    @NotNull
-	@Column(name = "location_id", nullable = false)
-	public Long getLocationId() {
-		return locationId;
-	}
-
-
-	public void setLocationId(Long locationId) {
-		this.locationId = locationId;
-	}
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false, updatable = false, insertable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

@@ -1,22 +1,11 @@
 package com.mephistosoftware.rester.controllers;
 
-import com.mephistosoftware.rester.controller.SiteController;
-import com.mephistosoftware.rester.controller.UserController;
-import com.mephistosoftware.rester.model.Person;
-import com.mephistosoftware.rester.model.Site;
-
-import org.assertj.core.api.Assertions;
+import com.mephistosoftware.rester.controller.PersonController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static java.util.Collections.emptyList;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.validation.ValidationException;
 
@@ -25,7 +14,7 @@ import javax.validation.ValidationException;
 public class IntegrationTests {
 
 	@Autowired
-	UserController userController;
+	PersonController personController;
 
 	@Test
 	public void testCreateReadDelete() {
@@ -55,6 +44,6 @@ public class IntegrationTests {
 
 	@Test(expected = ValidationException.class)
 	public void errorHandlingValidationExceptionThrown() {
-		userController.getUsers(null);
+		personController.getPersons();
 	}
 }

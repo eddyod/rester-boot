@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.mephistosoftware.rester.model.Person;
-import com.mephistosoftware.rester.repository.AppUserRepository;
+import com.mephistosoftware.rester.repository.PersonRepository;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.mephistosoftware.rester.security.SecurityConstants.EXPIRATION_TIME;
@@ -33,7 +33,7 @@ import static com.mephistosoftware.rester.security.SecurityConstants.TOKEN_PREFI
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-	private AppUserRepository userRepository;
+	private PersonRepository userRepository;
 
 	private AuthenticationManager authenticationManager;
 
@@ -89,7 +89,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		ServletContext servletContext = req.getServletContext();
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-        userRepository = webApplicationContext.getBean(AppUserRepository.class);
+        userRepository = webApplicationContext.getBean(PersonRepository.class);
         
 		String returnToken = buildToken(token, email);
 		res.getWriter().write(returnToken);
