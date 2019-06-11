@@ -12,7 +12,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(
-        value = {"created"},
+        value = {"created", "updated"},
         allowGetters = true
 )
 public abstract class AuditModel implements Serializable {
@@ -22,6 +22,8 @@ public abstract class AuditModel implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
+    private Date created;
+    private Date updated;
 	
 	
 	@Id
@@ -34,18 +36,10 @@ public abstract class AuditModel implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created", nullable = false, updatable = false)
     @CreatedDate
-    private Date created;
-
-	@Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated", nullable = false)
-    @LastModifiedDate
-    private Date updated;
-	
     public Date getCreated() {
 		return created;
 	}
@@ -54,7 +48,9 @@ public abstract class AuditModel implements Serializable {
 		this.created = created;
 	}
 
-	
+	@Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated", nullable = false)
+    @LastModifiedDate
 	public Date getUpdated() {
 		return updated;
 	}

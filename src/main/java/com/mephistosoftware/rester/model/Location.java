@@ -1,5 +1,8 @@
 package com.mephistosoftware.rester.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
@@ -9,9 +12,9 @@ public class Location extends AuditModel {
 	
 	private static final long serialVersionUID = 1L;
 	
-    private Long id;
     private String name;
     private String address;
+    private List<Schedule> schedules = new ArrayList<>();
 
 	@NotEmpty(message = "Name cannot be empty")
 	public String getName() {
@@ -30,6 +33,15 @@ public class Location extends AuditModel {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	@OneToMany(mappedBy="location")
+	public List<Schedule> getSchedules() {
+		return schedules;
+	}
+
+	public void setSchedules(List<Schedule> schedules) {
+		this.schedules = schedules;
 	}
     
 }

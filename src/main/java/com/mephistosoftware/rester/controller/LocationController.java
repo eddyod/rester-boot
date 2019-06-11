@@ -20,14 +20,19 @@ public class LocationController {
 		return locationRepository.findAll();
 	}
 
+	@GetMapping("/locations/{locationId}")
+	public Location getLocationsById(@PathVariable Long locationId) {
+		return locationRepository.findById(locationId)
+				.orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + locationId));
+	}
+
 	@PostMapping("/locations")
 	public Location addLocation(@Valid @RequestBody Location location) {
 		return locationRepository.save(location);
 	}
 
 	@PutMapping("/locations/{locationId}")
-	public Location updateLocation(@PathVariable Long locationId,
-			@Valid @RequestBody Location locationRequest) {
+	public Location updateLocation(@PathVariable Long locationId, @Valid @RequestBody Location locationRequest) {
 		return locationRepository.findById(locationId).map(location -> {
 			location.setName(locationRequest.getName());
 			return locationRepository.save(location);

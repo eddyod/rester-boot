@@ -19,8 +19,9 @@ public class Schedule extends AuditModel {
     private Date start;
     private Date end;
     private BigDecimal payRate;
-    private Boolean completed;
-    private Person person;
+    private Boolean completed;    
+    
+    private Person employee;
     private Location location;
     
     public Schedule() {}
@@ -49,8 +50,7 @@ public class Schedule extends AuditModel {
 		this.end = end;
 	}
 
-    @NotNull
-    @Column(name = "pay_rate", nullable = false)
+    @Column(name = "pay_rate")
 	public BigDecimal getPayRate() {
 		return payRate;
 	}
@@ -69,29 +69,28 @@ public class Schedule extends AuditModel {
 		this.completed = completed;
 	}
 
+	public void setLocation(Location location) {
+		this.location = location;
+	}
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false, updatable = false, insertable = false)
+    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-	public Person getPerson() {
-		return person;
+	public Person getEmployee() {
+		return employee;
 	}
 
-	public void setPerson(Person person) {
-		this.person = person;
+	public void setEmployee(Person employee) {
+		this.employee = employee;
 	}
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = false, updatable = false, insertable = false)
+    @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
 	public Location getLocation() {
 		return location;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
 	}
     
 }

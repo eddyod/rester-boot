@@ -33,7 +33,7 @@ import static com.mephistosoftware.rester.security.SecurityConstants.TOKEN_PREFI
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-	private PersonRepository userRepository;
+	private PersonRepository personRepository;
 
 	private AuthenticationManager authenticationManager;
 
@@ -54,18 +54,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	}
 
 	private String buildToken(String token, String email) {
-		Person appUser;
+		Person person;
 		StringBuilder returnToken = new StringBuilder("");
 		returnToken.append("{\"");
 		returnToken.append(SecurityConstants.TOKEN);
 		returnToken.append("\":\"");
 		returnToken.append(token);
 		returnToken.append("\"");
-		if (userRepository != null) {
-			appUser = userRepository.findByEmail(email);
-			returnToken.append(",\"userid\":\"");
-			returnToken.append(appUser.getId());
-			returnToken.append(",\"email\":\"");
+		if (personRepository != null) {
+			person = personRepository.findByEmail(email);
+			returnToken.append(",\"personId\":\"");
+			returnToken.append(person.getId());
+			returnToken.append("\",\"email\":\"");
 			returnToken.append(email);
 		} else {
 			System.out.println("repo IS NULL ");			
@@ -89,7 +89,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		ServletContext servletContext = req.getServletContext();
         WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-        userRepository = webApplicationContext.getBean(PersonRepository.class);
+        personRepository = webApplicationContext.getBean(PersonRepository.class);
         
 		String returnToken = buildToken(token, email);
 		res.getWriter().write(returnToken);

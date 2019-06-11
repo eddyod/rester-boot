@@ -1,9 +1,13 @@
 package com.mephistosoftware.rester.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mephistosoftware.rester.security.SecurityConstants;
 
 @Entity
 @Table(name = "person")
@@ -18,7 +22,9 @@ public class Person  extends AuditModel {
 	private String lastName;
 	private String email;
 	private Boolean active = Boolean.TRUE;
-	private Integer personType;
+	private Integer personType = SecurityConstants.TEACHER;
+    private List<Schedule> schedules = new ArrayList<>();
+
 	
 	
 	public Person() {}
@@ -34,7 +40,7 @@ public class Person  extends AuditModel {
 	}
 
 
-	@Column(name = "first_name", nullable = false)
+	@Column(name = "firstname")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -43,7 +49,7 @@ public class Person  extends AuditModel {
 		this.firstName = firstName;
 	}
 
-	@Column(name = "last_name", nullable = false)
+	@Column(name = "lastname")
 	public String getLastName() {
 		return lastName;
 	}
@@ -72,12 +78,22 @@ public class Person  extends AuditModel {
 		this.active = active;
 	}
 
+	@Column(name = "person_type")
 	public Integer getPersonType() {
 		return personType;
 	}
 
 	public void setPersonType(Integer personType) {
 		this.personType = personType;
+	}
+
+	@OneToMany(mappedBy="employee")	
+	public List<Schedule> getSchedules() {
+		return schedules;
+	}
+
+	public void setSchedules(List<Schedule> schedules) {
+		this.schedules = schedules;
 	}
 
 
