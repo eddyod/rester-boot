@@ -38,7 +38,7 @@ def fillSchedule(employee_id, location_id, amount, token):
             "person": {"id": str(employee_id)},
             "completed": str(completed)
             }
-        resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
+        requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
 
 
 def fillEmployee(token):
@@ -53,13 +53,22 @@ def fillEmployee(token):
     data = resp.json()  # Check the JSON Response Content documentation below
     return data['id']
 
+
+def getRandomEmployeeId(token):
+    resp = requests.get(API_URL + '/employees', headers={'Authorization': 'JWT {}'.format(token)})
+    ids = []
+    for _item in resp.json():
+        ids.append(_item['id'])
+    return choice(ids)
+
+
 def updateEmployee(token, employee_id):
     url = '{}/persons/{}'.format(API_URL, employee_id)
     fake = Faker()
     params = dict(
         firstName = fake.first_name(),
         lastName = fake.last_name(),
-        email=fake.email()
+        email = fake.email()
     )
     resp = requests.put(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     if resp.status_code == 200:
@@ -130,6 +139,20 @@ def testSchedules(token):
     for _item in resp.json():
         print('{} {} {}'.format(_item['id'], _item['start'], _item['end']))
 
+def getEmployeeSchedule(token, employee_id):
+    url = '{}/schedules/employee/{}'.format(API_URL, employee_id)
+    resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
+    for _item in resp.json():
+        print(_item)
+        #print('{} {} {}'.format(_item['employee.id'], _item['start'], _item['end']))
+
+def getLocationSchedule(token, id):
+    url = '{}/schedules/location/{}'.format(API_URL, id)
+    resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
+    for _item in resp.json():
+        print(_item)
+        #print('{} {} {}'.format(_item['location.id'], _item['start'], _item['end']))
+
 
 def login(email, password):
     url = API_URL + '/login'
@@ -141,7 +164,12 @@ def login(email, password):
 
 def register(firstName, lastName, email, password):
     url = API_URL + '/register'
-    params = dict(firstName=firstName, lastName=lastName, email=email, password=password)
+    params = dict(
+        firstName=firstName, 
+        lastName=lastName, 
+        email=email, 
+        password=password,
+        personType = 1)
     resp = requests.post(url=url, json=params)
     data = resp.json()  # Check the JSON Response Content documentation below
     return data['id']
@@ -168,28 +196,35 @@ def main():
     password = 'joe12345'
     firstName = 'joe'
     lastName = 'Imauser'
-    #id = register(firstName, lastName, email, password)
-    #print('Got ID of:', id)
+    id = register(firstName, lastName, email, password)
+    print('Got ID of:', id)
     token = login(email, password)
     #print('Got token:', token)
 
 
     #  insert
 
-    for i in range(2000):
-        #employee_id = fillEmployee(token)
-        location_id = fillLocation(token)
+    for i in range(10):
+        _ = fillEmployee(token)
+        _ = fillLocation(token)
+        
         location_id = getRandomLocationId(token)
         updateLocation(token, location_id)
-        #updateEmployee(token, employee_id)
-        fills = random.randint(2, 5)
+        
+        employee_id = getRandomEmployeeId(token)
+        updateEmployee(token, employee_id)
+        
+        fills = random.randint(2, 15)
         #print(employee_id, location_id)
-        #fillSchedule(employee_id, location_id, fills, token)
+        fillSchedule(employee_id, location_id, fills, token)
+        getEmployeeSchedule(token, employee_id)
+        getLocationSchedule(token, location_id)
+        
 
     #  now get data
-    #testEmployees(token)
-    #testLocations(token)
-    #testSchedules(token)
+    testEmployees(token)
+    testLocations(token)
+    testSchedules(token)
 
 
 if __name__ == '__main__':

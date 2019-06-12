@@ -1,7 +1,6 @@
 package com.mephistosoftware.rester.controller;
 
 import com.mephistosoftware.rester.exception.ResourceNotFoundException;
-import com.mephistosoftware.rester.model.Location;
 import com.mephistosoftware.rester.model.Person;
 import com.mephistosoftware.rester.repository.PersonRepository;
 import com.mephistosoftware.rester.security.SecurityConstants;
@@ -52,10 +51,23 @@ public class PersonController {
 		return personRepository.findById(personId)
 				.orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + personId));
 	}
-
+	
+	/**
+	 * Gets all persons
+	 * @return list of people
+	 */
 	@GetMapping("/persons")
 	public List<Person> getPersons() {
 		return personRepository.findAll();
+	}
+
+	/**
+	 * Gets only employees
+	 * @return list of people
+	 */
+	@GetMapping("/employees")
+	public List<Person> getEmployees() {
+		return personRepository.findAllEmployees(SecurityConstants.TEACHER);
 	}
 
 	@PostMapping("/persons")

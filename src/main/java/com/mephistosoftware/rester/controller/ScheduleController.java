@@ -23,9 +23,33 @@ public class ScheduleController {
 	@Autowired
 	private LocationRepository locationRepository;
 
+	/**
+	 * Get all schedules
+	 * @return list of all the schedules
+	 */
 	@GetMapping("/schedules")
 	public List<Schedule> getSchedules() {
 		return scheduleRepository.findAll();
+	}
+
+	/**
+	 * Gets list of schedules by employee
+	 * @param employeeId
+	 * @return a list of schedules per employee
+	 */
+	@GetMapping("/schedules/employee/{employeeId}")
+	public List<Schedule> getSchedulesByEmployee(@PathVariable Long employeeId) {
+		return scheduleRepository.findByEmployee(employeeId);
+	}
+
+	/**
+	 * Gets list of schedules by location
+	 * @param locationId
+	 * @return a list of schedules per location
+	 */
+	@GetMapping("/schedules/location/{locationId}")
+	public List<Schedule> getSchedulesByLocation(@PathVariable Long locationId) {
+		return scheduleRepository.findByLocation(locationId);
 	}
 
 	@PostMapping("/schedules/{employeeId}/{locationId}")
