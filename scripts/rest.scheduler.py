@@ -122,6 +122,12 @@ def insertUser(first_name, last_name, username, email, password, token):
     print(data)
 
 
+def getCurrentUser(token, id):
+    url = '{}/persons/{}'.format(API_URL, id)
+    resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)})
+    return resp.json()
+
+
 def testEmployees(token):
     resp = requests.get(API_URL + '/persons', headers={'Authorization': 'JWT {}'.format(token)})
     for _item in resp.json():
@@ -159,7 +165,7 @@ def login(email, password):
     params = dict(email=email, password=password)
     resp = requests.post(url=url, json=params)
     data = resp.json()  # Check the JSON Response Content documentation below
-    return data['token']
+    return data
 
 
 def register(firstName, lastName, email, password):
@@ -196,14 +202,18 @@ def main():
     password = 'joe12345'
     firstName = 'joe'
     lastName = 'Imauser'
-    id = register(firstName, lastName, email, password)
-    print('Got ID of:', id)
-    token = login(email, password)
+    #id = register(firstName, lastName, email, password)
+    #print('Got ID of:', id)
+    data = login(email, password)
+    print('data',data)
+    token = data['token']
+    id = data['id']
     #print('Got token:', token)
+    #print('Got id:', id)
 
 
     #  insert
-
+    """
     for i in range(10):
         _ = fillEmployee(token)
         _ = fillLocation(token)
@@ -220,11 +230,13 @@ def main():
         getEmployeeSchedule(token, employee_id)
         getLocationSchedule(token, location_id)
         
-
+    """
     #  now get data
-    testEmployees(token)
-    testLocations(token)
-    testSchedules(token)
+    #testEmployees(token)
+    #testLocations(token)
+    #testSchedules(token)
+    person = getCurrentUser(token, id)
+    print('person',person)
 
 
 if __name__ == '__main__':

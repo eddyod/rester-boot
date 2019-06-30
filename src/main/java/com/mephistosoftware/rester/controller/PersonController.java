@@ -46,10 +46,10 @@ public class PersonController {
 
 	}
 
-	@GetMapping("/persons/{personId}")
-	public Person getPersonById(@PathVariable Long personId) {
-		return personRepository.findById(personId)
-				.orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + personId));
+	@GetMapping("/persons/{id}")
+	public Person getPersonById(@PathVariable Long id) {
+		return personRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + id));
 	}
 	
 	/**
@@ -70,24 +70,31 @@ public class PersonController {
 		return personRepository.findAllEmployees(SecurityConstants.TEACHER);
 	}
 
+	@PostMapping("/employee")
+	public Person addEmployee(@Valid @RequestBody Person person) {
+		person.setActive(true);
+		person.setPersonType(SecurityConstants.TEACHER);
+		return personRepository.save(person);
+	}
+
 	@PostMapping("/persons")
 	public Person addPerson(@Valid @RequestBody Person person) {
 		return personRepository.save(person);
 	}
 
-	@PutMapping("/persons/{personId}")
-	public Person updatePerson(@PathVariable Long personId, @Valid @RequestBody Person personRequest) {
-		return personRepository.findById(personId).map(person -> {
+	@PutMapping("/persons/{id}")
+	public Person updatePerson(@PathVariable Long id, @Valid @RequestBody Person personRequest) {
+		return personRepository.findById(id).map(person -> {
 			return personRepository.save(person);
-		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + personId));
+		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
 
-	@DeleteMapping("/persons/{personId}")
-	public ResponseEntity<?> deletePerson(@PathVariable Long personId) {
-		return personRepository.findById(personId).map(person -> {
+	@DeleteMapping("/persons/{id}")
+	public ResponseEntity<?> deletePerson(@PathVariable Long id) {
+		return personRepository.findById(id).map(person -> {
 			personRepository.delete(person);
 			return ResponseEntity.ok().build();
-		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + personId));
+		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 
 	}
 

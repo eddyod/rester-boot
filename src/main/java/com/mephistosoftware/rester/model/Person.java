@@ -95,6 +95,19 @@ public class Person  extends AuditModel {
 	public void setSchedules(List<Schedule> schedules) {
 		this.schedules = schedules;
 	}
+	
+	@Transient
+	public String getName() {
+		StringBuilder name = new StringBuilder("");
+		if (this.firstName != null) {
+			name.append(this.firstName);
+		}
+		if (this.lastName != null) {
+			name.append(" ");
+			name.append(this.lastName);
+		}
+		return name.toString();
+	}
 
 
 }

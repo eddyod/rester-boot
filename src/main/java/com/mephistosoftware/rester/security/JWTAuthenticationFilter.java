@@ -63,7 +63,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		returnToken.append("\"");
 		if (personRepository != null) {
 			person = personRepository.findByEmail(email);
-			returnToken.append(",\"personId\":\"");
+			returnToken.append(",\"id\":\"");
 			returnToken.append(person.getId());
 			returnToken.append("\",\"email\":\"");
 			returnToken.append(email);
