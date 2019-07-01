@@ -28,8 +28,7 @@ public class PersonController {
 
 
 	/**
-	 * This is the non-secured url where an anonymous user can register
-	 * 
+	 * This is the non-secured url where an anonymous user can register	 * 
 	 * @param user object of Person
 	 * @return an Person object
 	 */
@@ -70,6 +69,11 @@ public class PersonController {
 		return personRepository.findAllEmployees(SecurityConstants.TEACHER);
 	}
 
+	/**
+	 * Add employee with specific employee settings
+	 * @param person json object of person
+	 * @return the person object
+	 */
 	@PostMapping("/employee")
 	public Person addEmployee(@Valid @RequestBody Person person) {
 		person.setActive(true);

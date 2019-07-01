@@ -42,7 +42,7 @@ def fillSchedule(employee_id, location_id, amount, token):
 
 
 def fillEmployee(token):
-    url = API_URL + '/persons'
+    url = API_URL + '/employee'
     fake = Faker()
     params = dict(
         firstName = fake.first_name(),
@@ -72,7 +72,7 @@ def updateEmployee(token, employee_id):
     )
     resp = requests.put(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     if resp.status_code == 200:
-        print('Success!')
+        print('Updated employee OK')
     else:
         print('Error.')
 
@@ -119,7 +119,7 @@ def insertUser(first_name, last_name, username, email, password, token):
     url = API_URL + 'api/users'
     resp = requests.post(url=url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
     data = resp.json()  # Check the JSON Response Content documentation below
-    print(data)
+    
 
 
 def getCurrentUser(token, id):
@@ -129,9 +129,9 @@ def getCurrentUser(token, id):
 
 
 def testEmployees(token):
-    resp = requests.get(API_URL + '/persons', headers={'Authorization': 'JWT {}'.format(token)})
+    resp = requests.get(API_URL + '/employees', headers={'Authorization': 'JWT {}'.format(token)})
     for _item in resp.json():
-        print('{} {} {}'.format(_item['id'], _item['firstName'], _item['lastName']))
+        print('{} {}'.format(_item['id'], _item['name']))
 
 
 def testLocations(token):
@@ -208,13 +208,15 @@ def main():
     print('data',data)
     token = data['token']
     id = data['id']
-    #print('Got token:', token)
-    #print('Got id:', id)
+    print('Got token:', token)
+    print('Got id:', id)
 
 
     #  insert
+    
     """
-    for i in range(10):
+    for i in range(2):
+        
         _ = fillEmployee(token)
         _ = fillLocation(token)
         
@@ -225,18 +227,18 @@ def main():
         updateEmployee(token, employee_id)
         
         fills = random.randint(2, 15)
-        #print(employee_id, location_id)
+        # print(employee_id, location_id)
         fillSchedule(employee_id, location_id, fills, token)
         getEmployeeSchedule(token, employee_id)
         getLocationSchedule(token, location_id)
         
     """
     #  now get data
-    #testEmployees(token)
+    testEmployees(token)
     #testLocations(token)
     #testSchedules(token)
-    person = getCurrentUser(token, id)
-    print('person',person)
+    #person = getCurrentUser(token, id)
+    #print('person',person)
 
 
 if __name__ == '__main__':
