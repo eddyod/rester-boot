@@ -21,6 +21,8 @@ public class Person  extends AuditModel {
 	private String firstName;
 	private String lastName;
 	private String email;
+	private String phone;
+	private String address;
 	private Boolean active = Boolean.TRUE;
 	private Integer personType = SecurityConstants.TEACHER;
     private List<Schedule> schedules = new ArrayList<>();
@@ -68,6 +70,22 @@ public class Person  extends AuditModel {
 		this.email = email;
 	}
 
+	@Column(name = "phone")
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
 	@Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
 	public Boolean getActive() {

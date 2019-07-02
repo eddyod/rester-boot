@@ -47,7 +47,9 @@ def fillEmployee(token):
     params = dict(
         firstName = fake.first_name(),
         lastName = fake.last_name(),
-        email=fake.email()
+        email=fake.email(),
+        phone=fake.phone_number(),
+        address=fake.address()
     )
     resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     data = resp.json()  # Check the JSON Response Content documentation below
@@ -128,11 +130,50 @@ def getCurrentUser(token, id):
     return resp.json()
 
 
+def searchEmployees(token):
+    print('\nSearch employees\n')
+    url = '{}/employees'.format(API_URL)
+    params = dict(
+        search='',
+        ordering='',
+        limit=10,
+        offset=0
+        )
+    try:
+        resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
+        print(resp.json())
+        """
+        for _item in resp.json():
+            print('Employee: {} {} {} {} {} {}'.format(_item['id'], 
+            _item['name'], 
+            _item['active'],
+            _item['phone'],
+            _item['address'],
+            _item['personType']))
+        """
+    except Exception as e: 
+        print('Search failed', e)
+
 def testEmployees(token):
     resp = requests.get(API_URL + '/employees', headers={'Authorization': 'JWT {}'.format(token)})
     for _item in resp.json():
         print('{} {}'.format(_item['id'], _item['name']))
 
+
+def searchLocations(token):
+    print('\nSearch locations\n')
+    url = '{}/locations'.format(API_URL)
+    params = dict(
+        search='',
+        ordering='',
+        limit=10,
+        offset=0
+        )
+    try:
+        resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
+        print(resp.json())
+    except Exception as e: 
+        print('Search locationsfailed', e)
 
 def testLocations(token):
     resp = requests.get(API_URL + '/locations', headers={'Authorization': 'JWT {}'.format(token)})
@@ -163,9 +204,13 @@ def getLocationSchedule(token, id):
 def login(email, password):
     url = API_URL + '/login'
     params = dict(email=email, password=password)
-    resp = requests.post(url=url, json=params)
-    data = resp.json()  # Check the JSON Response Content documentation below
-    return data
+    try:
+        resp = requests.post(url=url, json=params)
+        data = resp.json()  # Check the JSON Response Content documentation below
+        return data
+    except:
+        print('Login failed')
+
 
 
 def register(firstName, lastName, email, password):
@@ -176,9 +221,11 @@ def register(firstName, lastName, email, password):
         email=email, 
         password=password,
         personType = 1)
-    resp = requests.post(url=url, json=params)
-    data = resp.json()  # Check the JSON Response Content documentation below
-    return data['id']
+    try:
+        resp = requests.post(url=url, json=params)
+        data = resp.json()  # Check the JSON Response Content documentation below
+    except:
+        print('Registering failed')
 
 
 def random_date(start, end):
@@ -202,8 +249,7 @@ def main():
     password = 'joe12345'
     firstName = 'joe'
     lastName = 'Imauser'
-    #id = register(firstName, lastName, email, password)
-    #print('Got ID of:', id)
+    register(firstName, lastName, email, password)
     data = login(email, password)
     print('data',data)
     token = data['token']
@@ -214,8 +260,8 @@ def main():
 
     #  insert
     
-    """
-    for i in range(2):
+    
+    for i in range(33):
         
         _ = fillEmployee(token)
         _ = fillLocation(token)
@@ -228,17 +274,19 @@ def main():
         
         fills = random.randint(2, 15)
         # print(employee_id, location_id)
-        fillSchedule(employee_id, location_id, fills, token)
+        # fillSchedule(employee_id, location_id, fills, token)
         getEmployeeSchedule(token, employee_id)
         getLocationSchedule(token, location_id)
         
-    """
+    
     #  now get data
     testEmployees(token)
-    #testLocations(token)
-    #testSchedules(token)
-    #person = getCurrentUser(token, id)
-    #print('person',person)
+    testLocations(token)
+    testSchedules(token)
+    person = getCurrentUser(token, id)
+    print('person',person)
+    
+    searchLocations(token)
 
 
 if __name__ == '__main__':
