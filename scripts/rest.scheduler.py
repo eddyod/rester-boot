@@ -45,8 +45,8 @@ def fillEmployee(token):
     url = API_URL + '/employee'
     fake = Faker()
     params = dict(
-        firstName = fake.first_name(),
-        lastName = fake.last_name(),
+        firstName=fake.first_name(),
+        lastName=fake.last_name(),
         email=fake.email(),
         phone=fake.phone_number(),
         address=fake.address()
@@ -57,7 +57,7 @@ def fillEmployee(token):
 
 
 def getRandomEmployeeId(token):
-    resp = requests.get(API_URL + '/employees', headers={'Authorization': 'JWT {}'.format(token)})
+    resp = requests.get(API_URL + '/persons', headers={'Authorization': 'JWT {}'.format(token)})
     ids = []
     for _item in resp.json():
         ids.append(_item['id'])
@@ -78,6 +78,7 @@ def updateEmployee(token, employee_id):
     else:
         print('Error.')
 
+
 def fillLocation(token):
     url = API_URL + '/locations'
     fake = Faker()
@@ -88,6 +89,7 @@ def fillLocation(token):
     resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     data = resp.json()  # Check the JSON Response Content documentation below
     return data['id']
+
 
 def updateLocation(token, location_id):
     url = API_URL + '/locations'
@@ -121,7 +123,7 @@ def insertUser(first_name, last_name, username, email, password, token):
     url = API_URL + 'api/users'
     resp = requests.post(url=url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
     data = resp.json()  # Check the JSON Response Content documentation below
-    
+
 
 
 def getCurrentUser(token, id):
@@ -132,26 +134,25 @@ def getCurrentUser(token, id):
 
 def searchEmployees(token):
     print('\nSearch employees\n')
-    url = '{}/employees'.format(API_URL)
+    url = '{}/persons/employees/search'.format(API_URL)
     params = dict(
-        search='',
-        ordering='',
+        ordering='lastName',
         limit=10,
         offset=0
         )
     try:
-        resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
+        resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)}, params=params)
         print(resp.json())
         """
         for _item in resp.json():
-            print('Employee: {} {} {} {} {} {}'.format(_item['id'], 
-            _item['name'], 
+            print('Employee: {} {} {} {} {} {}'.format(_item['id'],
+            _item['name'],
             _item['active'],
             _item['phone'],
             _item['address'],
             _item['personType']))
         """
-    except Exception as e: 
+    except Exception as e:
         print('Search failed', e)
 
 def testEmployees(token):
@@ -172,7 +173,7 @@ def searchLocations(token):
     try:
         resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
         print(resp.json())
-    except Exception as e: 
+    except Exception as e:
         print('Search locationsfailed', e)
 
 def testLocations(token):
@@ -186,12 +187,13 @@ def testSchedules(token):
     for _item in resp.json():
         print('{} {} {}'.format(_item['id'], _item['start'], _item['end']))
 
+
 def getEmployeeSchedule(token, employee_id):
     url = '{}/schedules/employee/{}'.format(API_URL, employee_id)
     resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
     for _item in resp.json():
         print(_item)
-        #print('{} {} {}'.format(_item['employee.id'], _item['start'], _item['end']))
+        # print('{} {} {}'.format(_item['employee.id'], _item['start'], _item['end']))
 
 def getLocationSchedule(token, id):
     url = '{}/schedules/location/{}'.format(API_URL, id)
@@ -216,9 +218,9 @@ def login(email, password):
 def register(firstName, lastName, email, password):
     url = API_URL + '/register'
     params = dict(
-        firstName=firstName, 
-        lastName=lastName, 
-        email=email, 
+        firstName=firstName,
+        lastName=lastName,
+        email=email,
         password=password,
         personType = 1)
     try:
@@ -251,42 +253,39 @@ def main():
     lastName = 'Imauser'
     register(firstName, lastName, email, password)
     data = login(email, password)
-    print('data',data)
+    print('data', data)
     token = data['token']
     id = data['id']
     print('Got token:', token)
     print('Got id:', id)
-
-
     #  insert
-    
-    
-    for i in range(33):
-        
+
+    for i in range(32):
+
         _ = fillEmployee(token)
         _ = fillLocation(token)
-        
+
         location_id = getRandomLocationId(token)
         updateLocation(token, location_id)
-        
+
         employee_id = getRandomEmployeeId(token)
         updateEmployee(token, employee_id)
-        
+
         fills = random.randint(2, 15)
         # print(employee_id, location_id)
         # fillSchedule(employee_id, location_id, fills, token)
         getEmployeeSchedule(token, employee_id)
         getLocationSchedule(token, location_id)
-        
-    
+
+
     #  now get data
-    testEmployees(token)
-    testLocations(token)
-    testSchedules(token)
-    person = getCurrentUser(token, id)
-    print('person',person)
-    
-    searchLocations(token)
+    # testEmployees(token)
+    # testLocations(token)
+    # testSchedules(token)
+    # person = getCurrentUser(token, id)
+    # print('person',person)
+
+    searchEmployees(token)
 
 
 if __name__ == '__main__':
