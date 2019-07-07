@@ -134,7 +134,7 @@ def getCurrentUser(token, id):
 
 def searchEmployees(token):
     print('\nSearch employees\n')
-    url = '{}/persons/employees/search'.format(API_URL)
+    url = '{}/persons'.format(API_URL)
     params = dict(
         ordering='lastName',
         limit=10,
@@ -152,6 +152,24 @@ def searchEmployees(token):
             _item['address'],
             _item['personType']))
         """
+    except Exception as e:
+        print('Search failed', e)
+
+def getEmployees(token):
+    print('\nGet employees\n')
+    url = '{}/persons/employees'.format(API_URL)
+    try:
+        resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)})
+        #print(resp.json())
+        
+        for _item in resp.json():
+            print('Employee: {} {} {} {} {} {}'.format(_item['id'],
+            _item['name'],
+            _item['active'],
+            _item['phone'],
+            _item['address'],
+            _item['personType']))
+        
     except Exception as e:
         print('Search failed', e)
 
@@ -260,22 +278,22 @@ def main():
     print('Got id:', id)
     #  insert
 
-    for i in range(32):
+    for i in range(532):
 
         _ = fillEmployee(token)
-        _ = fillLocation(token)
+        # _ = fillLocation(token)
 
-        location_id = getRandomLocationId(token)
-        updateLocation(token, location_id)
+        # location_id = getRandomLocationId(token)
+        # updateLocation(token, location_id)
 
-        employee_id = getRandomEmployeeId(token)
-        updateEmployee(token, employee_id)
+        # employee_id = getRandomEmployeeId(token)
+        # updateEmployee(token, employee_id)
 
         fills = random.randint(2, 15)
         # print(employee_id, location_id)
         # fillSchedule(employee_id, location_id, fills, token)
-        getEmployeeSchedule(token, employee_id)
-        getLocationSchedule(token, location_id)
+        # getEmployeeSchedule(token, employee_id)
+        # getLocationSchedule(token, location_id)
 
 
     #  now get data
@@ -285,7 +303,7 @@ def main():
     # person = getCurrentUser(token, id)
     # print('person',person)
 
-    searchEmployees(token)
+    getEmployees(token)
 
 
 if __name__ == '__main__':

@@ -2,14 +2,10 @@ package com.mephistosoftware.rester.controller;
 
 import com.mephistosoftware.rester.exception.ResourceNotFoundException;
 import com.mephistosoftware.rester.model.Person;
-import com.mephistosoftware.rester.repository.OffsetBasedPageRequest;
 import com.mephistosoftware.rester.repository.PersonRepository;
 import com.mephistosoftware.rester.security.SecurityConstants;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,11 +65,9 @@ public class PersonController {
 	 * Gets only employees
 	 * @return list of people
 	 */
-	@GetMapping("/persons/employees/search")
-	public Page<Person> searchEmployees(@RequestParam("ordering") String ordering, @RequestParam("limit") int limit, @RequestParam("offset") int offset) {
-		Pageable pageable = new OffsetBasedPageRequest(offset, limit, ordering);
-		// Pageable pageable = PageRequest.of(offset, limit);
-		return personRepository.findAllEmployees(SecurityConstants.TEACHER, pageable);
+	@GetMapping("/persons/employees")
+	public List<Person> getEmployees() {
+		return personRepository.findAllEmployees(SecurityConstants.TEACHER);
 	}
 
 	/**
