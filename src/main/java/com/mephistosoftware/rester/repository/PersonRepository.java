@@ -14,7 +14,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
 	Person findByEmail(String email);
 
-	@Query(value = "select p from Person p where p.personType = :teacher")
+	@Query(value = "select p from Person p where p.personType = :teacher order by p.lastName, p.firstName")
 	List<Person> findAllEmployees(@Param("teacher") Integer teacher);
 	
 }
