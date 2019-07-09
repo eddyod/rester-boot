@@ -11,7 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.PersistenceException;
 import javax.validation.Valid;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -36,12 +40,22 @@ public class PersonController {
 	@PostMapping(SecurityConstants.SIGN_UP_URL)
 	public ResponseEntity<Person> registerWithResponse(@RequestBody Person person) {
 		if (person.getPassword() != null && person.getEmail() != null) {
+			
+			Person testPerson = personRepository.findByEmail(person.getEmail());
+			
+			if (testPerson != null && testPerson.getId() != null) {
+				return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);								
+			}
+			
 			person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
-			personRepository.save(person);
+			try {
+				personRepository.save(person);
+			} catch (PersistenceException pe) {
+				return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);				
+			}
 			return new ResponseEntity<Person>(person, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
-			
+			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);		
 		}
 
 	}
@@ -49,7 +63,7 @@ public class PersonController {
 	@GetMapping("/persons/{id}")
 	public Person getPersonById(@PathVariable Long id) {
 		return personRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
 	
 	/**
