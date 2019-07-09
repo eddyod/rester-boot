@@ -278,7 +278,7 @@ def main():
     print('Got id:', id)
     #  insert
 
-    for i in range(532):
+    for i in range(3):
 
         _ = fillEmployee(token)
         # _ = fillLocation(token)
@@ -286,8 +286,8 @@ def main():
         # location_id = getRandomLocationId(token)
         # updateLocation(token, location_id)
 
-        # employee_id = getRandomEmployeeId(token)
-        # updateEmployee(token, employee_id)
+        employee_id = getRandomEmployeeId(token)
+        updateEmployee(token, employee_id)
 
         fills = random.randint(2, 15)
         # print(employee_id, location_id)
