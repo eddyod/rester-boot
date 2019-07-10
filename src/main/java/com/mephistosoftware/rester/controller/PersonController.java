@@ -110,6 +110,7 @@ public class PersonController {
 		return personRepository.save(person);
 	}
 
+	@CrossOrigin
 	@PutMapping("/persons/{id}")
 	public Person updatePerson(@PathVariable Long id, @Valid @RequestBody Person personRequest) {
 		return personRepository.findById(id).map(person -> {

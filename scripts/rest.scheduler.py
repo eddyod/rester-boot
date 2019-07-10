@@ -66,6 +66,7 @@ def getRandomEmployeeId(token):
 
 def updateEmployee(token, employee_id):
     url = '{}/persons/{}'.format(API_URL, employee_id)
+    print(url)
     fake = Faker()
     params = dict(
         firstName = fake.first_name(),
@@ -306,7 +307,7 @@ def main():
     # person = getCurrentUser(token, id)
     # print('person',person)
 
-    getEmployees(token)
+    #getEmployees(token)
 
 
 if __name__ == '__main__':
