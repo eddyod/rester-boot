@@ -7,17 +7,8 @@ import datetime as dt
 
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
-API_URL = "http://localhost:8090"
-# API_URL = "http://10.195.4.147:8090"
-
-
-def testUsers():
-    resp = requests.get(API_URL + '/user_sites?user_id=2')
-    for _item in resp.json()['results']:
-        print('{} {} {}'.format(_item['id'],
-                                _item['first_name'],
-                                _item['last_name'],
-                                _item['username']))
+#API_URL = "http://localhost:8090"
+API_URL = "http://10.195.4.147:8090"
 
 
 def fillSchedule(employee_id, location_id, amount, token):
@@ -57,7 +48,7 @@ def fillEmployee(token):
 
 
 def getRandomEmployeeId(token):
-    resp = requests.get(API_URL + '/persons', headers={'Authorization': 'JWT {}'.format(token)})
+    resp = requests.get(API_URL + '/persons/employees', headers={'Authorization': 'JWT {}'.format(token)})
     ids = []
     for _item in resp.json():
         ids.append(_item['id'])
@@ -65,7 +56,7 @@ def getRandomEmployeeId(token):
 
 
 def updateEmployee(token, employee_id):
-    url = '{}/persons/{}'.format(API_URL, employee_id)
+    url = '{}/persons/employee/{}'.format(API_URL, employee_id)
     print(url)
     fake = Faker()
     params = dict(
@@ -80,7 +71,7 @@ def updateEmployee(token, employee_id):
     if resp.status_code == 200:
         print('Updated employee OK')
     else:
-        print('Error.')
+        print('Error updating employee.',resp.status_code)
 
 
 def fillLocation(token):
@@ -132,6 +123,7 @@ def insertUser(first_name, last_name, username, email, password, token):
 
 def getCurrentUser(token, id):
     url = '{}/persons/{}'.format(API_URL, id)
+    print('getCurrentUser url',url)
     resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)})
     return resp.json()
 
@@ -282,7 +274,7 @@ def main():
     print('Got id:', id)
     #  insert
 
-    for i in range(3):
+    for i in range(333):
 
         _ = fillEmployee(token)
         # _ = fillLocation(token)
@@ -304,8 +296,8 @@ def main():
     # testEmployees(token)
     # testLocations(token)
     # testSchedules(token)
-    # person = getCurrentUser(token, id)
-    # print('person',person)
+    person = getCurrentUser(token, id)
+    print('person',person)
 
     #getEmployees(token)
 

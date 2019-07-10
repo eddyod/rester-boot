@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+// @CrossOrigin( origins = "*" )
 @RestController
 public class PersonController {
 
@@ -110,9 +110,10 @@ public class PersonController {
 		return personRepository.save(person);
 	}
 
-	@CrossOrigin
-	@PutMapping("/persons/{id}")
-	public Person updatePerson(@PathVariable Long id, @Valid @RequestBody Person personRequest) {
+	
+	
+	@PutMapping("/persons/employee/{id}")
+	public Person updatePerson(@PathVariable(value = "id") Long id, @Valid @RequestBody Person personRequest) {
 		return personRepository.findById(id).map(person -> {
 			person.setFirstName(personRequest.getFirstName());
 			person.setLastName(personRequest.getLastName());
