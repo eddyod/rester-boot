@@ -7,8 +7,8 @@ import datetime as dt
 
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
-#API_URL = "http://localhost:8090"
-API_URL = "http://10.195.4.147:8090"
+API_URL = "http://localhost:8090"
+#API_URL = "http://10.195.4.147:8090"
 
 
 def fillSchedule(employee_id, location_id, amount, token):
@@ -57,7 +57,6 @@ def getRandomEmployeeId(token):
 
 def updateEmployee(token, employee_id):
     url = '{}/persons/employee/{}'.format(API_URL, employee_id)
-    print(url)
     fake = Faker()
     params = dict(
         firstName = fake.first_name(),
