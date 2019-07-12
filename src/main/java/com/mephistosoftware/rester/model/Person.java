@@ -105,7 +105,7 @@ public class Person  extends AuditModel {
 		this.personType = personType;
 	}
 
-	@OneToMany(mappedBy="employee")	
+	@OneToMany(mappedBy="employee", fetch = FetchType.LAZY)	
 	public List<Schedule> getSchedules() {
 		return schedules;
 	}

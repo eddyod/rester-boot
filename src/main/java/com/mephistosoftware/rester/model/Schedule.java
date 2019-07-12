@@ -74,7 +74,7 @@ public class Schedule extends AuditModel {
 	}
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "employee_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
 	public Person getEmployee() {
@@ -86,7 +86,7 @@ public class Schedule extends AuditModel {
 	}
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "location_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
 	public Location getLocation() {

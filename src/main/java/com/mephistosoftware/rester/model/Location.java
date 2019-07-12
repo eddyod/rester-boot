@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
@@ -15,6 +16,8 @@ public class Location extends AuditModel {
 	
     private String name;
     private String address;
+    private String email;
+    private String phone;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private List<Schedule> schedules = new ArrayList<>();
@@ -32,6 +35,25 @@ public class Location extends AuditModel {
 	@Column(name = "address1")
 	public String getAddress() {
 		return address;
+	}
+
+	@Email(message = "Enter a proper email.")
+	@Column(name = "email", unique = true)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Column(name = "phone")
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	
 	@Column(name = "latitude", precision = 10, scale = 8)

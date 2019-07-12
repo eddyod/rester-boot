@@ -60,7 +60,7 @@ public class PersonController {
 
 	}
 
-	@GetMapping("/persons/{id}")
+	@GetMapping("/person/{id}")
 	public Person getPersonById(@PathVariable Long id) {
 		return personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
@@ -79,7 +79,7 @@ public class PersonController {
 	 * Gets only employees
 	 * @return list of people
 	 */
-	@GetMapping("/persons/employees")
+	@GetMapping("/employees")
 	public List<Person> getEmployees() {
 		return personRepository.findAllEmployees(SecurityConstants.TEACHER);
 	}
@@ -105,14 +105,12 @@ public class PersonController {
 		return personRepository.save(person);
 	}
 
-	@PostMapping("/persons")
+	@PostMapping("/person")
 	public Person addPerson(@Valid @RequestBody Person person) {
 		return personRepository.save(person);
 	}
-
 	
-	
-	@PutMapping("/persons/employee/{id}")
+	@PutMapping("/person/{id}")
 	public Person updatePerson(@PathVariable(value = "id") Long id, @Valid @RequestBody Person personRequest) {
 		return personRepository.findById(id).map(person -> {
 			person.setFirstName(personRequest.getFirstName());
@@ -125,7 +123,7 @@ public class PersonController {
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
 
-	@DeleteMapping("/persons/{id}")
+	@DeleteMapping("/person/{id}")
 	public ResponseEntity<?> deletePerson(@PathVariable Long id) {
 		return personRepository.findById(id).map(person -> {
 			personRepository.delete(person);

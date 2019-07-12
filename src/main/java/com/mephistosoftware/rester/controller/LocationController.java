@@ -20,18 +20,18 @@ public class LocationController {
 		return locationRepository.findAll();
 	}
 
-	@GetMapping("/locations/{locationId}")
+	@GetMapping("/location/{locationId}")
 	public Location getLocationsById(@PathVariable Long locationId) {
 		return locationRepository.findById(locationId)
 				.orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + locationId));
 	}
 
-	@PostMapping("/locations")
+	@PostMapping("/location")
 	public Location addLocation(@Valid @RequestBody Location location) {
 		return locationRepository.save(location);
 	}
 
-	@PutMapping("/locations/{locationId}")
+	@PutMapping("/location/{locationId}")
 	public Location updateLocation(@PathVariable Long locationId, @Valid @RequestBody Location locationRequest) {
 		return locationRepository.findById(locationId).map(location -> {
 			location.setName(locationRequest.getName());
@@ -39,7 +39,7 @@ public class LocationController {
 		}).orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + locationId));
 	}
 
-	@DeleteMapping("/locations/{locationId}")
+	@DeleteMapping("/location/{locationId}")
 	public ResponseEntity<?> deleteLocation(@PathVariable Long locationId) {
 		return locationRepository.findById(locationId).map(location -> {
 			locationRepository.delete(location);
