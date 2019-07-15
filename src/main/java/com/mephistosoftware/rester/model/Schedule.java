@@ -8,7 +8,10 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
+
 
 @Entity
 @Table(name = "schedule")
@@ -16,20 +19,20 @@ public class Schedule extends AuditModel {
 	
 	private static final long serialVersionUID = 1L;
 	
+
     private Date start;
     private Date end;
     private BigDecimal payRate;
-    private Boolean completed;    
+    private Boolean completed; 
+    // private Integer personId;
+    // private Integer locationId;
     
-    private Person employee;
+    private Person person;
     private Location location;
     
     public Schedule() {}
     
-	
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy HH-mm")
-    @NotNull
-	@Temporal(TemporalType.TIMESTAMP)
+    // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     @Column(name = "start", nullable = false)
     public Date getStart() {
 		return start;
@@ -39,8 +42,6 @@ public class Schedule extends AuditModel {
 		this.start = start;
 	}
 
-    @NotNull
-	@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "end", nullable = false)
 	public Date getEnd() {
 		return end;
@@ -69,28 +70,49 @@ public class Schedule extends AuditModel {
 		this.completed = completed;
 	}
 
-	public void setLocation(Location location) {
-		this.location = location;
+	/*
+	@Column(name = "person_id")
+    public Integer getPersonId() {
+		return personId;
 	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
+	public void setPersonId(Integer personId) {
+		this.personId = personId;
+	}
+
+	@Column(name = "location_id")
+	public Integer getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
+	}
+	*/
+
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", referencedColumnName = "id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-	public Person getEmployee() {
-		return employee;
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	public Person getPerson() {
+		return person;
 	}
 
-	public void setEmployee(Person employee) {
-		this.employee = employee;
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 
+	
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = false)
+    @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	public Location getLocation() {
 		return location;
 	}
     
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+	
 }

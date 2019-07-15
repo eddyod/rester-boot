@@ -24,8 +24,7 @@ public abstract class AuditModel implements Serializable {
 	private Long id;
     private Date created;
     private Date updated;
-	
-	
+    
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -36,7 +35,8 @@ public abstract class AuditModel implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
+		
 	@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created", nullable = false, updatable = false)
     @CreatedDate

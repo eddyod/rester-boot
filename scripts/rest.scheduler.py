@@ -7,15 +7,15 @@ import datetime as dt
 
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
-#API_URL = "http://localhost:8090"
-API_URL = "http://10.195.4.147:8090"
+API_URL = "http://localhost:8090"
+#API_URL = "http://10.195.4.147:8090"
 
 
-def fillSchedule(employee_id, location_id, amount, token):
-    url = '{}/schedules/{}/{}'.format(API_URL, employee_id, location_id)
+def fillSchedule(personId, locationId, amount, token):
+    url = '{}/schedule/{}/{}'.format(API_URL, personId, locationId)
     for i in range(amount):
         start, end = getRandomStartEnd()
-        pay_rate = randint(12, 50)
+        payRate = randint(12, 50)
         if start < dt.datetime.now():
             samples = [True, True, True, True, True, False]
         else:
@@ -24,13 +24,36 @@ def fillSchedule(employee_id, location_id, amount, token):
         params = {
             "start": start.strftime("%Y-%m-%dT%H:%M:%S.%f"),
             "end": end.strftime("%Y-%m-%dT%H:%M:%S.%f"),
-            "payRate": str(pay_rate),
-            "location": {"id": str(location_id)},
-            "person": {"id": str(employee_id)},
+            "payRate": str(payRate),
+            "location": {"id": str(locationId)},
+            "person": {"id": str(personId)},
             "completed": str(completed)
             }
-        requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
+        try:
+            resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
+        except Exception as e:
+            print('Error filling schedule',e)
 
+def updateSchedule(token, id, locationId, personId):
+    url = '{}/schedule/{}'.format(API_URL, id)
+    start, end = getRandomStartEnd()
+    payRate = randint(12, 50)
+    if start < dt.datetime.now():
+        samples = [True, True, True, True, True, False]
+    else:
+        samples = [True]
+    completed = choice(samples)
+    params = {
+            "start": start.strftime("%Y-%m-%dT%H:%M:%S.%f"),
+            "end": end.strftime("%Y-%m-%dT%H:%M:%S.%f"),
+            "payRate": str(payRate),
+            "location": {"id": str(locationId)},
+            "person": {"id": str(personId)},
+            "completed": str(completed)
+            }
+    resp = requests.put(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
+    if resp.status_code != 200:
+        print('Error updating location.')
 
 def fillEmployee(token):
     url = API_URL + '/employee'
@@ -40,7 +63,7 @@ def fillEmployee(token):
         lastName=fake.last_name(),
         email=fake.email(),
         phone=fake.phone_number(),
-        address=fake.address()
+        address=fake.street_address()
     )
     resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     data = resp.json()  # Check the JSON Response Content documentation below
@@ -58,6 +81,7 @@ def fillLocation(token):
     )
     resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     data = resp.json()  # Check the JSON Response Content documentation below
+    #print(data)
     return data['id']
 
 def getRandomEmployeeId(token):
@@ -68,8 +92,8 @@ def getRandomEmployeeId(token):
     return choice(ids)
 
 
-def updateEmployee(token, employee_id):
-    url = '{}/person/{}'.format(API_URL, employee_id)
+def updateEmployee(token, personId):
+    url = '{}/person/{}'.format(API_URL, personId)
     fake = Faker()
     params = dict(
         firstName = fake.first_name(),
@@ -86,8 +110,8 @@ def updateEmployee(token, employee_id):
         print('Error updating employee.',resp.status_code)
 
 
-def updateLocation(token, location_id):
-    url = '{}/location/{}'.format(API_URL, location_id)
+def updateLocation(token, locationId):
+    url = '{}/location/{}'.format(API_URL, locationId)
     fake = Faker()
     params = dict(
         name=fake.company(),
@@ -98,7 +122,10 @@ def updateLocation(token, location_id):
         print('Error updating location.')
 
 def getRandomLocationId(token):
-    resp = requests.get(API_URL + '/locations', headers={'Authorization': 'JWT {}'.format(token)})
+    try:
+        resp = requests.get(API_URL + '/locations', headers={'Authorization': 'JWT {}'.format(token)})
+    except Exception as e:
+        print('Get Random location failed', e)
     ids = []
     for _item in resp.json():
         ids.append(_item['id'])
@@ -197,16 +224,26 @@ def testLocations(token):
 
 def testSchedules(token):
     resp = requests.get(API_URL + '/schedules',  headers={'Authorization': 'JWT {}'.format(token)})
-    for _item in resp.json():
-        print('{} {} {}'.format(_item['id'], _item['start'], _item['end']))
+    if resp.status_code != 200:
+        print('Error getting schedules.',resp.status_code)
+    else:
+        for _item in resp.json():
+            #print(_item)
+            print('Schedule: {} {} {}'.format(_item['id'], _item['start'], _item['person']['name']))
 
 
-def getEmployeeSchedule(token, employee_id):
-    url = '{}/schedules/employee/{}'.format(API_URL, employee_id)
+def getEmployeeSchedule(token, personId):
+    url = '{}/schedules/employee/{}'.format(API_URL, personId)
     resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
     for _item in resp.json():
         print(_item)
         # print('{} {} {}'.format(_item['employee.id'], _item['start'], _item['end']))
+
+
+def getScheduleById(token, id):
+    url = '{}/schedule/{}'.format(API_URL, id)
+    resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
+    print(resp.json())
 
 def getLocationSchedule(token, id):
     url = '{}/schedules/location/{}'.format(API_URL, id)
@@ -278,24 +315,27 @@ def main():
         _ = fillEmployee(token)
         _ = fillLocation(token)
 
-        location_id = getRandomLocationId(token)
-        #updateLocation(token, location_id)
+        locationId = getRandomLocationId(token)
+        updateLocation(token, locationId)
 
-        employee_id = getRandomEmployeeId(token)
-        #updateEmployee(token, employee_id)
+        personId = getRandomEmployeeId(token)
+        updateEmployee(token, personId)
 
-        fills = random.randint(2, 15)
-        # print(employee_id, location_id)
-        fillSchedule(employee_id, location_id, fills, token)
-        getEmployeeSchedule(token, employee_id)
-        # getLocationSchedule(token, location_id)
+        fills = random.randint(1, 2)
+        # print(personId, locationId)
+        fillSchedule(personId, locationId, fills, token)
+        #getEmployeeSchedule(token, personId)
+        # getLocationSchedule(token, locationId)
 
 
     #  now get data
     # testEmployees(token)
     # testLocations(token)
-    # testSchedules(token)
-    # person = getCurrentUser(token, id)
+    testSchedules(token)
+    person = getCurrentUser(token, id)
+    getScheduleById(token, 1)
+    updateSchedule(token, 1, locationId, personId)
+    getScheduleById(token, 1)
     # print('person',person)
 
     #getEmployees(token)

@@ -12,8 +12,8 @@ import com.mephistosoftware.rester.model.Schedule;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-	@Query(value = "select s from Schedule s where s.employee.id = :employeeId")
-	List<Schedule> findByEmployee(@Param("employeeId") Long employeeId);
+	@Query(value = "select s from Schedule s where s.person.id = :personId")
+	List<Schedule> findByEmployee(@Param("personId") Long personId);
 
 	@Query(value = "select s from Schedule s where s.location.id = :locationId")
 	List<Schedule> findByLocation(@Param("locationId") Long locationId);

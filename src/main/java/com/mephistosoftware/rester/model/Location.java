@@ -1,26 +1,24 @@
 package com.mephistosoftware.rester.model;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+
 
 @Entity
 @Table(name = "location")
 public class Location extends AuditModel {
 	
 	private static final long serialVersionUID = 1L;
-	
+
     private String name;
     private String address;
     private String email;
     private String phone;
     private BigDecimal latitude;
     private BigDecimal longitude;
-    private List<Schedule> schedules = new ArrayList<>();
+    // private List<Schedule> schedules = new ArrayList<>();
 
 	@NotEmpty(message = "Name cannot be empty")
 	public String getName() {
@@ -77,8 +75,10 @@ public class Location extends AuditModel {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
-	@OneToMany(mappedBy="location")
+	
+	/*
+	@OneToMany(mappedBy="person", fetch = FetchType.LAZY)
+	@JsonDeserialize(using = ScheduleDeserializer.class)
 	public List<Schedule> getSchedules() {
 		return schedules;
 	}
@@ -86,5 +86,7 @@ public class Location extends AuditModel {
 	public void setSchedules(List<Schedule> schedules) {
 		this.schedules = schedules;
 	}
+	*/
+	
     
 }

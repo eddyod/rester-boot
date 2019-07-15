@@ -25,6 +25,7 @@ public class ScheduleController {
 
 	/**
 	 * Get all schedules
+	 * 
 	 * @return list of all the schedules
 	 */
 	@GetMapping("/schedules")
@@ -33,7 +34,20 @@ public class ScheduleController {
 	}
 
 	/**
+	 * Gets one schedule by primary ID
+	 * 
+	 * @param id
+	 * @return a schedule object
+	 */
+	@GetMapping("/schedule/{id}")
+	public Schedule getScheduleById(@PathVariable Long id) {
+		return scheduleRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + id));
+	}
+
+	/**
 	 * Gets list of schedules by employee
+	 * 
 	 * @param employeeId
 	 * @return a list of schedules per employee
 	 */
@@ -44,6 +58,7 @@ public class ScheduleController {
 
 	/**
 	 * Gets list of schedules by location
+	 * 
 	 * @param locationId
 	 * @return a list of schedules per location
 	 */
@@ -52,11 +67,11 @@ public class ScheduleController {
 		return scheduleRepository.findByLocation(locationId);
 	}
 
-	@PostMapping("/schedules/{employeeId}/{locationId}")
+	@PostMapping("/schedule/{employeeId}/{locationId}")
 	public Schedule addSchedule(@Valid @RequestBody Schedule schedule, @PathVariable Long employeeId,
 			@PathVariable Long locationId) {
 		return personRepository.findById(employeeId).map(employee -> {
-			schedule.setEmployee(employee);
+			schedule.setPerson(employee);
 			return locationRepository.findById(locationId).map(location -> {
 				schedule.setLocation(location);
 				return scheduleRepository.save(schedule);
@@ -64,14 +79,14 @@ public class ScheduleController {
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + employeeId));
 	}
 
-	@PutMapping("/schedules/{scheduleId}")
+	@PutMapping("/schedule/{scheduleId}")
 	public Schedule updateSchedule(@PathVariable Long scheduleId, @Valid @RequestBody Schedule scheduleRequest) {
 		return scheduleRepository.findById(scheduleId).map(schedule -> {
-			return scheduleRepository.save(schedule);
+			return scheduleRepository.save(scheduleRequest);
 		}).orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + scheduleId));
 	}
 
-	@DeleteMapping("/schedules/{scheduleId}")
+	@DeleteMapping("/schedule/{scheduleId}")
 	public ResponseEntity<?> deleteSchedule(@PathVariable Long scheduleId) {
 		return scheduleRepository.findById(scheduleId).map(schedule -> {
 			scheduleRepository.delete(schedule);

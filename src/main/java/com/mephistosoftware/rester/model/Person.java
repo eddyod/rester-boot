@@ -1,10 +1,8 @@
 package com.mephistosoftware.rester.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mephistosoftware.rester.security.SecurityConstants;
@@ -17,6 +15,7 @@ public class Person  extends AuditModel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	private String password;
 	private String firstName;
 	private String lastName;
@@ -25,10 +24,8 @@ public class Person  extends AuditModel {
 	private String address;
 	private Boolean active = Boolean.TRUE;
 	private Integer personType = SecurityConstants.TEACHER;
-    private List<Schedule> schedules = new ArrayList<>();
+    // private List<Schedule> schedules = new ArrayList<>();
 
-	
-	
 	public Person() {}
 	
 	@JsonIgnore
@@ -104,8 +101,11 @@ public class Person  extends AuditModel {
 	public void setPersonType(Integer personType) {
 		this.personType = personType;
 	}
-
-	@OneToMany(mappedBy="employee", fetch = FetchType.LAZY)	
+	
+	
+	/*
+	@OneToMany(mappedBy="person", fetch = FetchType.LAZY)
+	@JsonDeserialize(using = ScheduleDeserializer.class)
 	public List<Schedule> getSchedules() {
 		return schedules;
 	}
@@ -113,7 +113,9 @@ public class Person  extends AuditModel {
 	public void setSchedules(List<Schedule> schedules) {
 		this.schedules = schedules;
 	}
+	*/
 	
+
 	@Transient
 	public String getName() {
 		StringBuilder name = new StringBuilder("");
