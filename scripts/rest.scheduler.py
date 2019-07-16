@@ -7,7 +7,7 @@ import datetime as dt
 
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
-API_URL = "http://localhost:8090"
+API_URL = "http://www.mephistosoftware.com/premier-rester"
 #API_URL = "http://10.195.4.147:8090"
 
 
