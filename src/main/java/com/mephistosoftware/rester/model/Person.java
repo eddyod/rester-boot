@@ -84,7 +84,7 @@ public class Person  extends AuditModel {
 		this.address = address;
 	}
 
-	@Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+	@Column(name = "is_active", nullable = false)
 	public Boolean getActive() {
 		return active;
 	}

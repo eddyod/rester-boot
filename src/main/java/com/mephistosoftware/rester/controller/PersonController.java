@@ -39,11 +39,15 @@ public class PersonController {
 	 */
 	@PostMapping(SecurityConstants.SIGN_UP_URL)
 	public ResponseEntity<Person> registerWithResponse(@RequestBody Person person) {
+		System.out.println(person.getPassword());
+		System.out.println(person.getEmail());
+		
 		if (person.getPassword() != null && person.getEmail() != null) {
 			
 			Person testPerson = personRepository.findByEmail(person.getEmail());
 			
 			if (testPerson != null && testPerson.getId() != null) {
+				System.out.println("testPerson is not null and getid is not null");
 				return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);								
 			}
 			
@@ -51,10 +55,12 @@ public class PersonController {
 			try {
 				personRepository.save(person);
 			} catch (PersistenceException pe) {
+				System.out.println("could not persist person");
 				return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);				
 			}
 			return new ResponseEntity<Person>(person, HttpStatus.OK);
 		} else {
+			System.out.println("could not persist person, no password or email");
 			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);		
 		}
 

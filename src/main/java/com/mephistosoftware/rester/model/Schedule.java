@@ -5,9 +5,6 @@ import java.util.Date;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
@@ -111,6 +108,18 @@ public class Schedule extends AuditModel {
     
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+	
+	@Transient
+	public String getTitle() {
+		StringBuilder title = new StringBuilder("");
+		if (this.person != null && this.location != null) {
+			title.append(this.person.getName());
+			title.append(" at ");
+			title.append(this.location.getName());
+		}
+		
+		return title.toString();
 	}
 	
 }
