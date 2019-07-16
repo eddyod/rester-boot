@@ -34,8 +34,7 @@ public class LocationController {
 	@PutMapping("/location/{locationId}")
 	public Location updateLocation(@PathVariable Long locationId, @Valid @RequestBody Location locationRequest) {
 		return locationRepository.findById(locationId).map(location -> {
-			location.setName(locationRequest.getName());
-			return locationRepository.save(location);
+			return locationRepository.save(locationRequest);
 		}).orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + locationId));
 	}
 

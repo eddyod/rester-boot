@@ -30,7 +30,7 @@ public class Location extends AuditModel {
 	}
 
 	@NotEmpty(message = "Address cannot be empty.")
-	@Column(name = "address1")
+	@Column(name = "address")
 	public String getAddress() {
 		return address;
 	}

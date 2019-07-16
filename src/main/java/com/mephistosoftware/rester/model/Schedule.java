@@ -24,8 +24,8 @@ public class Schedule extends AuditModel {
     private Date end;
     private BigDecimal payRate;
     private Boolean completed; 
-    // private Integer personId;
-    // private Integer locationId;
+    private Integer personId;
+    private Integer locationId;
     
     private Person person;
     private Location location;
@@ -70,8 +70,8 @@ public class Schedule extends AuditModel {
 		this.completed = completed;
 	}
 
-	/*
-	@Column(name = "person_id")
+	
+	@Column(name = "person_id", nullable = false)
     public Integer getPersonId() {
 		return personId;
 	}
@@ -80,7 +80,7 @@ public class Schedule extends AuditModel {
 		this.personId = personId;
 	}
 
-	@Column(name = "location_id")
+	@Column(name = "location_id", nullable = false)
 	public Integer getLocationId() {
 		return locationId;
 	}
@@ -88,11 +88,10 @@ public class Schedule extends AuditModel {
 	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
 	}
-	*/
+	
 
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", referencedColumnName = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "person_id", referencedColumnName = "id", updatable = false, insertable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	public Person getPerson() {
 		return person;
@@ -104,8 +103,7 @@ public class Schedule extends AuditModel {
 
 	
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "location_id", referencedColumnName = "id", updatable = false, insertable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	public Location getLocation() {
 		return location;

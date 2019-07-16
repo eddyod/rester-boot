@@ -75,7 +75,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		}
 		
 		returnToken.append("\"}");
-		System.out.println("token\t" + returnToken.toString());						
 
 		return returnToken.toString();
 	}

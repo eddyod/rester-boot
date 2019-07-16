@@ -7,8 +7,8 @@ import datetime as dt
 
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
-API_URL = "http://localhost:8090"
-#API_URL = "http://10.195.4.147:8090"
+#API_URL = "http://localhost:8090"
+API_URL = "http://10.195.4.147:8090"
 
 
 def fillSchedule(personId, locationId, amount, token):
@@ -25,8 +25,8 @@ def fillSchedule(personId, locationId, amount, token):
             "start": start.strftime("%Y-%m-%dT%H:%M:%S.%f"),
             "end": end.strftime("%Y-%m-%dT%H:%M:%S.%f"),
             "payRate": str(payRate),
-            "location": {"id": str(locationId)},
-            "person": {"id": str(personId)},
+            "locationId": str(locationId),
+            "personId": str(personId),
             "completed": str(completed)
             }
         try:
@@ -34,7 +34,30 @@ def fillSchedule(personId, locationId, amount, token):
         except Exception as e:
             print('Error filling schedule',e)
 
-def updateSchedule(token, id, locationId, personId):
+def addSchedule(personId, locationId, amount, token):
+    url = '{}/schedule'.format(API_URL)
+    for i in range(amount):
+        start, end = getRandomStartEnd()
+        payRate = randint(12, 50)
+        if start < dt.datetime.now():
+            samples = [True, True, True, True, True, False]
+        else:
+            samples = [True]
+        completed = choice(samples)
+        params = {
+            "start": start.strftime("%Y-%m-%dT%H:%M:%S.%f"),
+            "end": end.strftime("%Y-%m-%dT%H:%M:%S.%f"),
+            "payRate": str(payRate),
+            "locationId": str(locationId),
+            "personId": str(personId),
+            "completed": str(completed)
+            }
+        try:
+            resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
+        except Exception as e:
+            print('Error filling schedule',e)
+
+def updateSchedule(token, id, personId, locationId):
     url = '{}/schedule/{}'.format(API_URL, id)
     start, end = getRandomStartEnd()
     payRate = randint(12, 50)
@@ -47,13 +70,15 @@ def updateSchedule(token, id, locationId, personId):
             "start": start.strftime("%Y-%m-%dT%H:%M:%S.%f"),
             "end": end.strftime("%Y-%m-%dT%H:%M:%S.%f"),
             "payRate": str(payRate),
-            "location": {"id": str(locationId)},
-            "person": {"id": str(personId)},
+            "locationId": str(locationId),
+            "personId": str(personId),
             "completed": str(completed)
             }
     resp = requests.put(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     if resp.status_code != 200:
-        print('Error updating location.')
+        print('Error updating schedule.')
+    else:
+        print(resp.json())
 
 def fillEmployee(token):
     url = API_URL + '/employee'
@@ -228,8 +253,8 @@ def testSchedules(token):
         print('Error getting schedules.',resp.status_code)
     else:
         for _item in resp.json():
-            #print(_item)
-            print('Schedule: {} {} {}'.format(_item['id'], _item['start'], _item['person']['name']))
+            print(_item)
+            #print('Schedule: {} {} {} {}'.format(_item['id'], _item['start'], _item['person']['name'], _item['location']['name']))
 
 
 def getEmployeeSchedule(token, personId):
@@ -323,7 +348,7 @@ def main():
 
         fills = random.randint(1, 2)
         # print(personId, locationId)
-        fillSchedule(personId, locationId, fills, token)
+        addSchedule(personId, locationId, fills, token)
         #getEmployeeSchedule(token, personId)
         # getLocationSchedule(token, locationId)
 
@@ -333,9 +358,9 @@ def main():
     # testLocations(token)
     testSchedules(token)
     person = getCurrentUser(token, id)
-    getScheduleById(token, 1)
-    updateSchedule(token, 1, locationId, personId)
-    getScheduleById(token, 1)
+    #getScheduleById(token, 1)
+    updateSchedule(token, 1, personId, locationId)
+    #getScheduleById(token, 1)
     # print('person',person)
 
     #getEmployees(token)
