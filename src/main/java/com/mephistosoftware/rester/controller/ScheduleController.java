@@ -67,13 +67,14 @@ public class ScheduleController {
 		return scheduleRepository.findByLocation(locationId);
 	}
 
-	@PostMapping("/schedule/{employeeId}/{locationId}")
-	public Schedule createSchedule(@Valid @RequestBody Schedule schedule, @PathVariable Long employeeId,
-			@PathVariable Long locationId) {
+	@PostMapping("/scheduleXXXX/{employeeId}/{locationId}")
+	public Schedule createScheduleXXX(@PathVariable Long employeeId,
+			@PathVariable Long locationId, @Valid @RequestBody Schedule schedule) {
 		return personRepository.findById(employeeId).map(employee -> {
 			schedule.setPerson(employee);
 			return locationRepository.findById(locationId).map(location -> {
 				schedule.setLocation(location);
+				schedule.setCompleted(false);
 				return scheduleRepository.save(schedule);
 			}).orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + locationId));
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + employeeId));
@@ -81,7 +82,8 @@ public class ScheduleController {
 
 	@PostMapping("/schedule")
 	public Schedule addSchedule(@Valid @RequestBody Schedule schedule) {
-				return scheduleRepository.save(schedule);
+		schedule.setCompleted(false);		
+		return scheduleRepository.save(schedule);
 	}
 
 	@PutMapping("/schedule/{id}/{employeeId}/{locationId}")

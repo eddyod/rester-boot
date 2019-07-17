@@ -57,8 +57,7 @@ public class Schedule extends AuditModel {
 		this.payRate = payRate;
 	}
 
-    @NotNull
-	@Column(name = "completed", nullable = false)
+	@Column(name = "completed", nullable = true)
 	public Boolean getCompleted() {
 		return completed;
 	}

@@ -7,12 +7,12 @@ import datetime as dt
 
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
-API_URL = "http://www.mephistosoftware.com/premier-rester"
-#API_URL = "http://10.195.4.147:8090"
+#API_URL = "http://www.mephistosoftware.com/premier-rester"
+API_URL = "http://10.195.4.147:8090"
 
 
 def fillSchedule(personId, locationId, amount, token):
-    url = '{}/schedule/{}/{}'.format(API_URL, personId, locationId)
+    url = '{}/schedule'.format(API_URL)
     for i in range(amount):
         start, end = getRandomStartEnd()
         payRate = randint(12, 50)
@@ -322,10 +322,10 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'joe@user.com'
-    password = 'joe12345'
-    firstName = 'joe'
-    lastName = 'Imauser'
+    email = 'jasonodonnell@yahoo.com'
+    password = 'j1234567'
+    firstName = 'Jason'
+    lastName = 'ODonnell'
     register(firstName, lastName, email, password)
     data = login(email, password)
     print('data', data)
@@ -335,7 +335,7 @@ def main():
     print('Got id:', id)
     #  insert
 
-    for i in range(3):
+    for i in range(33):
 
         _ = fillEmployee(token)
         _ = fillLocation(token)
@@ -346,7 +346,7 @@ def main():
         personId = getRandomEmployeeId(token)
         updateEmployee(token, personId)
 
-        fills = random.randint(1, 2)
+        fills = random.randint(1, 5)
         # print(personId, locationId)
         addSchedule(personId, locationId, fills, token)
         #getEmployeeSchedule(token, personId)
