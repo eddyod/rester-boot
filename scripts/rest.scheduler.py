@@ -7,9 +7,9 @@ import datetime as dt
 
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
-#API_URL = "http://www.mephistosoftware.com/premier-rester"
-API_URL = "http://10.195.4.147:8090"
-
+##API_URL = "http://www.mephistosoftware.com/premier-rester"
+#API_URL = "http://10.195.4.147:8090"
+API_URL = "http://localhost:8090"
 
 def fillSchedule(personId, locationId, amount, token):
     url = '{}/schedule'.format(API_URL)
@@ -179,13 +179,29 @@ def getCurrentUser(token, id):
     return resp.json()
 
 
-def searchEmployees(token):
+def getPagedEmployees(token):
     print('\nSearch employees\n')
-    url = '{}/persons'.format(API_URL)
+    url = '{}/employees/paged'.format(API_URL)
     params = dict(
-        ordering='lastName',
-        limit=10,
-        offset=0
+        filter='',
+        ordering='',
+        limit=2,
+        offset=2
+        )
+    try:
+        resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)}, params=params)
+        print(resp.json())
+    except Exception as e:
+        print('Search failed', e)
+
+def getPagedSchedules(token):
+    print('\nSearch schedules\n')
+    url = '{}/schedules/paged'.format(API_URL)
+    params = dict(
+        filter='',
+        ordering='',
+        limit=2,
+        offset=2
         )
     try:
         resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)}, params=params)
@@ -335,6 +351,7 @@ def main():
     print('Got id:', id)
     #  insert
 
+    """
     for i in range(33):
 
         _ = fillEmployee(token)
@@ -352,18 +369,18 @@ def main():
         #getEmployeeSchedule(token, personId)
         # getLocationSchedule(token, locationId)
 
-
+    """
     #  now get data
     # testEmployees(token)
     # testLocations(token)
-    testSchedules(token)
-    person = getCurrentUser(token, id)
+    #testSchedules(token)
+    #person = getCurrentUser(token, id)
     #getScheduleById(token, 1)
-    updateSchedule(token, 1, personId, locationId)
+    #updateSchedule(token, 1, personId, locationId)
     #getScheduleById(token, 1)
     # print('person',person)
 
-    #getEmployees(token)
+    getPagedSchedules(token)
 
 
 if __name__ == '__main__':

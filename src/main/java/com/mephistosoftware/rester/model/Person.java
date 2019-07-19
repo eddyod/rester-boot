@@ -115,16 +115,13 @@ public class Person  extends AuditModel {
 	}
 	*/
 	
-
 	@Transient
 	public String getName() {
 		StringBuilder name = new StringBuilder("");
-		if (this.firstName != null) {
-			name.append(this.firstName);
-		}
-		if (this.lastName != null) {
-			name.append(" ");
+		if (this.firstName != null && this.lastName != null) {
 			name.append(this.lastName);
+			name.append(", ");
+			name.append(this.firstName);
 		}
 		return name.toString();
 	}
