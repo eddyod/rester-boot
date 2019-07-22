@@ -42,8 +42,6 @@ public class PersonController {
 	 */
 	@PostMapping(SecurityConstants.SIGN_UP_URL)
 	public ResponseEntity<Person> registerWithResponse(@RequestBody Person person) {
-		System.out.println(person.getPassword());
-		System.out.println(person.getEmail());
 		
 		if (person.getPassword() != null && person.getEmail() != null) {
 			
