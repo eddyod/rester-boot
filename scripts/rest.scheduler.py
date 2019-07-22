@@ -8,8 +8,8 @@ import datetime as dt
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
 ##API_URL = "http://www.mephistosoftware.com/premier-rester"
-#API_URL = "http://10.195.4.147:8090"
-API_URL = "http://localhost:8090"
+API_URL = "http://10.195.4.147:8090"
+#API_URL = "http://localhost:8090"
 
 def fillSchedule(personId, locationId, amount, token):
     url = '{}/schedule'.format(API_URL)
@@ -317,6 +317,7 @@ def register(firstName, lastName, email, password):
     try:
         resp = requests.post(url=url, json=params)
         data = resp.json()  # Check the JSON Response Content documentation below
+        print(data)
     except:
         print('Registering failed')
 
@@ -339,20 +340,20 @@ def getRandomStartEnd():
 def main():
     """Main method"""
     email = 'jasonodonnell@yahoo.com'
-    password = 'j1234567'
+    password = 'Xj1234567'
     firstName = 'Jason'
     lastName = 'ODonnell'
-    register(firstName, lastName, email, password)
+    #register(firstName, lastName, email, password)
     data = login(email, password)
-    print('data', data)
-    token = data['token']
-    id = data['id']
-    print('Got token:', token)
-    print('Got id:', id)
+    print(data)
+    #token = data['token']
+    #id = data['id']
+    #print('Got token:', token)
+    #print('Got id:', id)
     #  insert
-
     """
-    for i in range(33):
+    
+    for i in range(25):
 
         _ = fillEmployee(token)
         _ = fillLocation(token)
@@ -363,7 +364,7 @@ def main():
         personId = getRandomEmployeeId(token)
         updateEmployee(token, personId)
 
-        fills = random.randint(1, 5)
+        fills = random.randint(15, 50)
         # print(personId, locationId)
         addSchedule(personId, locationId, fills, token)
         #getEmployeeSchedule(token, personId)
@@ -380,7 +381,7 @@ def main():
     #getScheduleById(token, 1)
     # print('person',person)
 
-    getPagedSchedules(token)
+    #getPagedSchedules(token)
 
 
 if __name__ == '__main__':

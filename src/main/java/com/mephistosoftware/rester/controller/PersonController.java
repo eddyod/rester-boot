@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 
@@ -34,35 +33,30 @@ public class PersonController {
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
-
 	/**
-	 * This is the non-secured url where an anonymous user can register	 * 
+	 * This is the non-secured url where an anonymous user can register *
+	 * 
 	 * @param user object of Person
 	 * @return an Person object
 	 */
 	@PostMapping(SecurityConstants.SIGN_UP_URL)
-	public ResponseEntity<Person> registerWithResponse(@RequestBody Person person) {
-		
+	public ResponseEntity<Person> registerWithResponse(@Valid @RequestBody Person person) {
+
 		if (person.getPassword() != null && person.getEmail() != null) {
-			
+
 			Person testPerson = personRepository.findByEmail(person.getEmail());
-			
+
 			if (testPerson != null && testPerson.getId() != null) {
 				System.out.println("testPerson is not null and getid is not null");
-				return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);								
+				return new ResponseEntity<Person>(person, HttpStatus.BAD_REQUEST);
 			}
-			
+
 			person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
-			try {
-				personRepository.save(person);
-			} catch (PersistenceException pe) {
-				System.out.println("could not persist person");
-				return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);				
-			}
+			personRepository.save(person);
 			return new ResponseEntity<Person>(person, HttpStatus.OK);
 		} else {
 			System.out.println("could not persist person, no password or email");
-			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);		
+			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
 		}
 
 	}
@@ -72,9 +66,10 @@ public class PersonController {
 		return personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
-	
+
 	/**
 	 * Gets all persons
+	 * 
 	 * @return list of people
 	 */
 	@GetMapping("/persons")
@@ -84,6 +79,7 @@ public class PersonController {
 
 	/**
 	 * Gets only employees
+	 * 
 	 * @return list of people
 	 */
 	@GetMapping("/employees")
@@ -93,36 +89,41 @@ public class PersonController {
 
 	/**
 	 * Gets only employees
+	 * 
 	 * @return list of people
 	 */
 	@GetMapping("/employees/paged")
-	 public Page<Person> getPagedEmployees(
-			 @RequestParam("filter") String filter,
-			 @RequestParam("ordering") String ordering,
-			 @RequestParam("limit") int limit,
-			 @RequestParam("offset") int offset
-			 ) {
+	public Page<Person> getPagedEmployees(@RequestParam("filter") String filter,
+			@RequestParam("ordering") String ordering, @RequestParam("limit") int limit,
+			@RequestParam("offset") int offset) {
 		Pageable pageable = new OffsetBasedPageRequest(offset, limit);
-	 	return personRepository.findPagedEmployees(SecurityConstants.TEACHER, pageable);
-	 }
+		return personRepository.findPagedEmployees(SecurityConstants.TEACHER, pageable);
+	}
 
 	/**
 	 * Add employee with specific employee settings
+	 * 
 	 * @param person json object of person
 	 * @return the person object
 	 */
 	@PostMapping("/employee")
-	public Person addEmployee(@Valid @RequestBody Person person) {
+	public ResponseEntity<Person> addEmployee(@Valid @RequestBody Person person) {
 		person.setActive(true);
 		person.setPersonType(SecurityConstants.TEACHER);
-		return personRepository.save(person);
+		try {
+			personRepository.save(person);
+		} catch (PersistenceException pe) {
+			System.out.println("could not persist person");
+			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
+		}
+		return new ResponseEntity<Person>(person, HttpStatus.OK);
 	}
 
 	@PostMapping("/person")
 	public Person addPerson(@Valid @RequestBody Person person) {
 		return personRepository.save(person);
 	}
-	
+
 	@PutMapping("/person/{id}")
 	public Person updatePerson(@PathVariable(value = "id") Long id, @Valid @RequestBody Person personRequest) {
 		return personRepository.findById(id).map(person -> {
