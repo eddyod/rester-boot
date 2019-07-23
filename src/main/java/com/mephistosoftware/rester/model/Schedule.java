@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
@@ -30,6 +31,7 @@ public class Schedule extends AuditModel {
     public Schedule() {}
     
     // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+    @NotNull(message = "Start time cannot be empty.")
     @Column(name = "start", nullable = false)
     public Date getStart() {
 		return start;
@@ -66,7 +68,7 @@ public class Schedule extends AuditModel {
 		this.completed = completed;
 	}
 
-	
+	@NotNull(message = "A schedule must have a teacher.")
 	@Column(name = "person_id", nullable = false)
     public Integer getPersonId() {
 		return personId;
@@ -76,6 +78,7 @@ public class Schedule extends AuditModel {
 		this.personId = personId;
 	}
 
+	@NotNull(message = "A schedule must have a school.")
 	@Column(name = "location_id", nullable = false)
 	public Integer getLocationId() {
 		return locationId;

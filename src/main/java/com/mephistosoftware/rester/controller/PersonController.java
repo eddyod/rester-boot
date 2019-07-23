@@ -1,7 +1,9 @@
 package com.mephistosoftware.rester.controller;
 
 import com.mephistosoftware.rester.exception.ResourceNotFoundException;
+import com.mephistosoftware.rester.model.Location;
 import com.mephistosoftware.rester.model.Person;
+import com.mephistosoftware.rester.repository.LocationRepository;
 import com.mephistosoftware.rester.repository.OffsetBasedPageRequest;
 import com.mephistosoftware.rester.repository.PersonRepository;
 import com.mephistosoftware.rester.security.SecurityConstants;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 // @CrossOrigin( origins = "*" )
 @RestController
@@ -25,21 +29,16 @@ public class PersonController {
 
 	@Autowired
 	private PersonRepository personRepository;
+	
+	@Autowired
+	private LocationRepository locationRepository;
 
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	public PersonController(PersonRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.personRepository = userRepository;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-	}
-
-	
-
-	@PostMapping(SecurityConstants.SIGN_UP_URL)
-	public Person register(@Valid @RequestBody Person person) {
-		return personRepository.save(person);
-	}
-	
+	}	
 	
 	/**
 	 * This is the non-secured url where an anonymous user can register *
@@ -47,23 +46,17 @@ public class PersonController {
 	 * @param user object of Person
 	 * @return an Person object
 	 */
-	@PostMapping(SecurityConstants.SIGN_UP_URL + "XXX")
+	@PostMapping(SecurityConstants.SIGN_UP_URL)
 	public ResponseEntity<Person> registerWithResponse(@Valid @RequestBody Person person) {
-
 		if (person.getPassword() != null && person.getEmail() != null) {
-
 			Person testPerson = personRepository.findByEmail(person.getEmail());
-
 			if (testPerson != null && testPerson.getId() != null) {
-				System.out.println("testPerson is not null and getid is not null");
 				return new ResponseEntity<Person>(person, HttpStatus.BAD_REQUEST);
 			}
-
 			person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
 			personRepository.save(person);
 			return new ResponseEntity<Person>(person, HttpStatus.OK);
 		} else {
-			System.out.println("could not persist person, no password or email");
 			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
 		}
 
@@ -153,5 +146,19 @@ public class PersonController {
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 
 	}
+	
+
+	@PostMapping("/employee/{employeeId}/{locationId}")
+	public Person attachEmployeeSchool(@PathVariable Long employeeId, @PathVariable Long locationId) {
+		Set<Location> schools = new HashSet<>();
+		return personRepository.findById(employeeId).map(employee -> {
+			return locationRepository.findById(locationId).map(location -> {
+				schools.add(location);
+				employee.setSchools(schools);
+				return personRepository.save(employee);
+			}).orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + locationId));
+		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + employeeId));
+	}
+
 
 }

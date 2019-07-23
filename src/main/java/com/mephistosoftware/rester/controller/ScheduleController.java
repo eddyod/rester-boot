@@ -1,14 +1,11 @@
 package com.mephistosoftware.rester.controller;
 
 import com.mephistosoftware.rester.exception.ResourceNotFoundException;
-import com.mephistosoftware.rester.model.Person;
 import com.mephistosoftware.rester.model.Schedule;
 import com.mephistosoftware.rester.repository.LocationRepository;
 import com.mephistosoftware.rester.repository.OffsetBasedPageRequest;
 import com.mephistosoftware.rester.repository.PersonRepository;
 import com.mephistosoftware.rester.repository.ScheduleRepository;
-import com.mephistosoftware.rester.security.SecurityConstants;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

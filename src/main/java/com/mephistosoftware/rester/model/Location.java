@@ -1,9 +1,16 @@
 package com.mephistosoftware.rester.model;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
@@ -18,7 +25,7 @@ public class Location extends AuditModel {
     private String phone;
     private BigDecimal latitude;
     private BigDecimal longitude;
-    // private List<Schedule> schedules = new ArrayList<>();
+    private Set<Person> employees = new HashSet<>();
 
 	@NotEmpty(message = "Name cannot be empty")
 	public String getName() {
@@ -36,7 +43,7 @@ public class Location extends AuditModel {
 	}
 
 	@Email(message = "Enter a proper email.")
-	@Column(name = "email", unique = true)
+	@Column(name = "email", nullable = true)
 	public String getEmail() {
 		return email;
 	}
@@ -54,6 +61,8 @@ public class Location extends AuditModel {
 		this.phone = phone;
 	}
 	
+	@Min(value = -86, message = "Minimum value for latitude is -86")
+	@Max(value = 86, message = "Maximum value for latitude is 86")
 	@Column(name = "latitude", precision = 10, scale = 8)
 	public BigDecimal getLatitude() {
 		return latitude;
@@ -63,6 +72,8 @@ public class Location extends AuditModel {
 		this.latitude = latitude;
 	}
 
+	@Min(value = -180, message = "Minimum value for longitude is -180")
+	@Max(value = 180, message = "Maximum value for longitude is 180")
 	@Column(name = "longitude", precision = 11, scale = 8)
 	public BigDecimal getLongitude() {
 		return longitude;
@@ -74,6 +85,16 @@ public class Location extends AuditModel {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "schools")
+	@JsonIgnore
+	public Set<Person> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(Set<Person> employees) {
+		this.employees = employees;
 	}
 	
 	/*

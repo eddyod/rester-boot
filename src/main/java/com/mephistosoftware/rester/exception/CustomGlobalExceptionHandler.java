@@ -1,5 +1,6 @@
 package com.mephistosoftware.rester.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +38,13 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }*/
 
 
-    // @Validate For Validating Path Variables and Request Parameters
     @ExceptionHandler(ConstraintViolationException.class)
     public void constraintViolationException(HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public void dataIntegrityViolationException(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -61,7 +66,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        body.put("errors", errors);
+        body.put("error", errors);
 
         return new ResponseEntity<>(body, headers, status);
 

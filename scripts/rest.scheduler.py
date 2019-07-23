@@ -8,8 +8,8 @@ import datetime as dt
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
 ##API_URL = "http://www.mephistosoftware.com/premier-rester"
-#API_URL = "http://10.195.4.147:8090"
-API_URL = "http://localhost:8090"
+API_URL = "http://10.195.4.147:8090"
+#API_URL = "http://localhost:8090"
 
 def fillSchedule(personId, locationId, amount, token):
     url = '{}/schedule'.format(API_URL)
@@ -103,11 +103,15 @@ def fillLocation(token):
         address=fake.street_address(),
         email = fake.email(),
         phone = fake.phone_number(),
+        latitude = random.uniform(-86,86),
+        longitude = random.uniform(-180, 180)
     )
+    id = 1
     resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
-    data = resp.json()  # Check the JSON Response Content documentation below
-    #print(data)
-    return data['id']
+    if resp.status_code == 200:
+        data = resp.json()
+        id = data['id']
+    return id
 
 def getRandomEmployeeId(token):
     resp = requests.get(API_URL + '/employees', headers={'Authorization': 'JWT {}'.format(token)})
@@ -129,6 +133,16 @@ def updateEmployee(token, personId):
         active = 1
     )
     resp = requests.put(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
+    if resp.status_code == 200:
+        print('Updated employee OK')
+    else:
+        print('Error updating employee.',resp.status_code)
+
+
+def attachEmployeeSchool(token, employeeId, locationId):
+    # /employee/{employeeId}/{locationId}
+    url = '{}/employee/{}/{}'.format(API_URL, employeeId, locationId)
+    resp = requests.post(url=url,  headers={'Authorization': 'JWT {}'.format(token)})
     if resp.status_code == 200:
         print('Updated employee OK')
     else:
@@ -239,7 +253,7 @@ def getEmployees(token):
 def testEmployees(token):
     resp = requests.get(API_URL + '/employees', headers={'Authorization': 'JWT {}'.format(token)})
     for _item in resp.json():
-        print('{} {}'.format(_item['id'], _item['name']))
+        print('Employee: {} {}'.format(_item['id'], _item['name']))
 
 
 def searchLocations(token):
@@ -253,14 +267,13 @@ def searchLocations(token):
         )
     try:
         resp = requests.get(url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
-        print(resp.json())
     except Exception as e:
         print('Search locationsfailed', e)
 
 def testLocations(token):
     resp = requests.get(API_URL + '/locations', headers={'Authorization': 'JWT {}'.format(token)})
     for _item in resp.json():
-        print('{} {}'.format(_item['id'], _item['name']))
+        print('Location: {} {} {} {}'.format(_item['id'], _item['name'], _item['latitude'], _item['longitude']))
 
 
 def testSchedules(token):
@@ -269,8 +282,8 @@ def testSchedules(token):
         print('Error getting schedules.',resp.status_code)
     else:
         for _item in resp.json():
-            print(_item)
-            #print('Schedule: {} {} {} {}'.format(_item['id'], _item['start'], _item['person']['name'], _item['location']['name']))
+            # print(_item)
+            print('Schedule: {} {} {} {}'.format(_item['id'], _item['start'], _item['person']['name'], _item['location']['name']))
 
 
 def getEmployeeSchedule(token, personId):
@@ -317,7 +330,7 @@ def register(firstName, lastName, email, password):
     try:
         resp = requests.post(url=url, json=params)
         data = resp.json()  # Check the JSON Response Content documentation below
-        print(data)
+        # print(data)
     except:
         print('Registering failed')
 
@@ -339,42 +352,49 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'jasonodonnell'
-    password = 'Xj1234567'
+    email = 'jasonodonnell@yahoo.com'
+    password = 'j1234567'
     firstName = 'Jason'
     lastName = 'ODonnell'
     register(firstName, lastName, email, password)
-    #data = login(email, password)
-    #print(data)
-    #token = data['token']
+    data = login(email, password)
+    # print(data)
+    token = data['token']
     #id = data['id']
     #print('Got token:', token)
     #print('Got id:', id)
     #  insert
-    """
     
-    for i in range(25):
+    
+    for i in range(2):
 
         _ = fillEmployee(token)
         _ = fillLocation(token)
 
-        locationId = getRandomLocationId(token)
-        updateLocation(token, locationId)
+        #locationId = getRandomLocationId(token)
+        #updateLocation(token, locationId)
 
-        personId = getRandomEmployeeId(token)
-        updateEmployee(token, personId)
+        #personId = getRandomEmployeeId(token)
+        #updateEmployee(token, personId)
 
-        fills = random.randint(15, 50)
+        #fills = random.randint(15, 50)
         # print(personId, locationId)
-        addSchedule(personId, locationId, fills, token)
+        #addSchedule(personId, locationId, fills, token)
         #getEmployeeSchedule(token, personId)
         # getLocationSchedule(token, locationId)
 
-    """
+    for i in range(2):
+        locationId = getRandomLocationId(token)
+        personId = getRandomEmployeeId(token)
+        fills = random.randint(1, 5)
+        addSchedule(personId, locationId, fills, token)
+        
     #  now get data
     # testEmployees(token)
-    # testLocations(token)
-    #testSchedules(token)
+    attachEmployeeSchool(token, personId, locationId)
+    testEmployees(token)
+    testLocations(token)
+    testSchedules(token)
     #person = getCurrentUser(token, id)
     #getScheduleById(token, 1)
     #updateSchedule(token, 1, personId, locationId)
