@@ -33,13 +33,21 @@ public class PersonController {
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
+	
+
+	@PostMapping(SecurityConstants.SIGN_UP_URL)
+	public Person register(@Valid @RequestBody Person person) {
+		return personRepository.save(person);
+	}
+	
+	
 	/**
 	 * This is the non-secured url where an anonymous user can register *
 	 * 
 	 * @param user object of Person
 	 * @return an Person object
 	 */
-	@PostMapping(SecurityConstants.SIGN_UP_URL)
+	@PostMapping(SecurityConstants.SIGN_UP_URL + "XXX")
 	public ResponseEntity<Person> registerWithResponse(@Valid @RequestBody Person person) {
 
 		if (person.getPassword() != null && person.getEmail() != null) {

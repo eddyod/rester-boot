@@ -8,8 +8,8 @@ import datetime as dt
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
 ##API_URL = "http://www.mephistosoftware.com/premier-rester"
-API_URL = "http://10.195.4.147:8090"
-#API_URL = "http://localhost:8090"
+#API_URL = "http://10.195.4.147:8090"
+API_URL = "http://localhost:8090"
 
 def fillSchedule(personId, locationId, amount, token):
     url = '{}/schedule'.format(API_URL)
@@ -339,13 +339,13 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'jasonodonnell@yahoo.com'
+    email = 'jasonodonnell'
     password = 'Xj1234567'
     firstName = 'Jason'
     lastName = 'ODonnell'
-    #register(firstName, lastName, email, password)
-    data = login(email, password)
-    print(data)
+    register(firstName, lastName, email, password)
+    #data = login(email, password)
+    #print(data)
     #token = data['token']
     #id = data['id']
     #print('Got token:', token)
