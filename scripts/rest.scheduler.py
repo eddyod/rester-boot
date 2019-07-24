@@ -356,7 +356,7 @@ def main():
     password = 'j1234567'
     firstName = 'Jason'
     lastName = 'ODonnell'
-    register(firstName, lastName, email, password)
+    #register(firstName, lastName, email, password)
     data = login(email, password)
     # print(data)
     token = data['token']
@@ -366,7 +366,7 @@ def main():
     #  insert
     
     
-    for i in range(2):
+    for i in range(0):
 
         _ = fillEmployee(token)
         _ = fillLocation(token)
@@ -383,10 +383,10 @@ def main():
         #getEmployeeSchedule(token, personId)
         # getLocationSchedule(token, locationId)
 
-    for i in range(2):
+    for i in range(40):
         locationId = getRandomLocationId(token)
         personId = getRandomEmployeeId(token)
-        fills = random.randint(1, 5)
+        fills = random.randint(20, 150)
         addSchedule(personId, locationId, fills, token)
         
     #  now get data
