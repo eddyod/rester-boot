@@ -286,6 +286,17 @@ def testSchedules(token):
             print('Schedule: {} {} {} {}'.format(_item['id'], _item['start'], _item['person']['name'], _item['location']['name']))
 
 
+def testTodaySchedules(token, id):
+    url = '{}/schedules/today/{}'.format(API_URL, id)
+    resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
+    if resp.status_code != 200:
+        print('Error getting schedules.',resp.status_code)
+    else:
+        for _item in resp.json():
+            # print(_item)
+            print('Schedule: {} {} {} {}'.format(_item['id'], _item['start'], _item['person']['name'], _item['location']['name']))
+
+
 def getEmployeeSchedule(token, personId):
     url = '{}/schedules/employee/{}'.format(API_URL, personId)
     resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
@@ -383,18 +394,19 @@ def main():
         #getEmployeeSchedule(token, personId)
         # getLocationSchedule(token, locationId)
 
-    for i in range(40):
+    for i in range(4):
         locationId = getRandomLocationId(token)
         personId = getRandomEmployeeId(token)
-        fills = random.randint(20, 150)
+        fills = random.randint(2, 15)
         addSchedule(personId, locationId, fills, token)
         
     #  now get data
     # testEmployees(token)
-    attachEmployeeSchool(token, personId, locationId)
-    testEmployees(token)
-    testLocations(token)
-    testSchedules(token)
+    #attachEmployeeSchool(token, personId, locationId)
+    #testEmployees(token)
+    #testLocations(token)
+    #testSchedules(token)
+    testTodaySchedules(token, 3)
     #person = getCurrentUser(token, id)
     #getScheduleById(token, 1)
     #updateSchedule(token, 1, personId, locationId)

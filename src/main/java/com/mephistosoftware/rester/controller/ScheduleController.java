@@ -12,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -58,6 +61,19 @@ public class ScheduleController {
 	public List<Schedule> getSchedulesByEmployee(@PathVariable Long employeeId) {
 		return scheduleRepository.findByEmployee(employeeId);
 	}
+
+	/**
+	 * Gets list of schedules by employee and today
+	 * 
+	 * @param employeeId
+	 * @return a list of schedules per employee and today
+	 */
+	@GetMapping("/schedules/today/{employeeId}")
+	public List<Schedule> getTodaySchedulesByEmployee(@PathVariable Long employeeId) {
+		Date today = Calendar.getInstance().getTime();
+		return scheduleRepository.findTodayByEmployee(employeeId, today);
+	}
+
 
 	/**
 	 * Gets list of schedules by location
