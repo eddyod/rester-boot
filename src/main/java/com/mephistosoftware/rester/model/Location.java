@@ -87,7 +87,7 @@ public class Location extends AuditModel {
 		this.address = address;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "schools")
+	@ManyToMany(mappedBy = "schools")
 	@JsonIgnore
 	public Set<Person> getEmployees() {
 		return employees;

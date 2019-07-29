@@ -283,7 +283,7 @@ def testSchedules(token):
     else:
         for _item in resp.json():
             # print(_item)
-            print('Schedule: {} {} {} {}'.format(_item['id'], _item['start'], _item['person']['name'], _item['location']['name']))
+            print('Schedule: {} {} {} {} {}'.format(_item['id'], _item['start'], _item['end'], _item['person']['name'], _item['location']['name']))
 
 
 def testTodaySchedules(token, id):
@@ -326,7 +326,7 @@ def login(email, password):
         data = resp.json()  # Check the JSON Response Content documentation below
         return data
     except:
-        print('Login failed')
+        print('Login failed', resp)
 
 
 
@@ -369,7 +369,7 @@ def main():
     lastName = 'ODonnell'
     #register(firstName, lastName, email, password)
     data = login(email, password)
-    # print(data)
+    print(data)
     token = data['token']
     #id = data['id']
     #print('Got token:', token)
@@ -394,7 +394,7 @@ def main():
         #getEmployeeSchedule(token, personId)
         # getLocationSchedule(token, locationId)
 
-    for i in range(4):
+    for i in range(0):
         locationId = getRandomLocationId(token)
         personId = getRandomEmployeeId(token)
         fills = random.randint(2, 15)
@@ -405,8 +405,8 @@ def main():
     #attachEmployeeSchool(token, personId, locationId)
     #testEmployees(token)
     #testLocations(token)
-    #testSchedules(token)
-    testTodaySchedules(token, 3)
+    testSchedules(token)
+    #testTodaySchedules(token, 3)
     #person = getCurrentUser(token, id)
     #getScheduleById(token, 1)
     #updateSchedule(token, 1, personId, locationId)

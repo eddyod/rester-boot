@@ -28,6 +28,7 @@ public class Person  extends AuditModel {
 	private String phone;
 	private String address;
 	private Boolean active = Boolean.TRUE;
+	private String token;
 	private Integer personType = SecurityConstants.TEACHER;
     private Set<Location> schools = new HashSet<>();
 
@@ -101,6 +102,15 @@ public class Person  extends AuditModel {
 		this.active = active;
 	}
 	
+	@Column(name = "token", columnDefinition = "TEXT")
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	@NotNull(message = "Person must have a role.")
 	@Column(name = "person_type")
 	public Integer getPersonType() {
@@ -135,7 +145,7 @@ public class Person  extends AuditModel {
 		return name.toString();
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "employee_school", joinColumns = { 
 			@JoinColumn(name = "employee_id", nullable = true, updatable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "location_id", 
