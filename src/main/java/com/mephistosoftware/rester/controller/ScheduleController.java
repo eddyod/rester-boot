@@ -124,6 +124,21 @@ public class ScheduleController {
 		}).orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + scheduleId));
 	}
 
+	/**
+	 * This gets called from the teacher when they show up at the school
+	 * and click the 'i showed up button'
+	 * @param scheduleId primary int
+	 * @param scheduleRequest body of schedule
+	 * @return a object of schedule or an error
+	 */
+	@PutMapping("/schedule/completed/{scheduleId}")
+	public Schedule updateScheduleArrived(@PathVariable Long scheduleId, @Valid @RequestBody Schedule scheduleRequest) {
+		return scheduleRepository.findById(scheduleId).map(schedule -> {
+			scheduleRequest.setCompleted(true);
+			return scheduleRepository.save(scheduleRequest);
+		}).orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + scheduleId));
+	}
+
 	@DeleteMapping("/schedule/{scheduleId}")
 	public ResponseEntity<?> deleteSchedule(@PathVariable Long scheduleId) {
 		return scheduleRepository.findById(scheduleId).map(schedule -> {
