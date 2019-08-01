@@ -103,8 +103,9 @@ def fillLocation(token):
         address=fake.street_address(),
         email = fake.email(),
         phone = fake.phone_number(),
-        latitude = random.uniform(-86,86),
-        longitude = random.uniform(-180, 180)
+        # 32.7510668,-117.1691726,
+        latitude = random.uniform(31,34),
+        longitude = random.uniform(-119, -116)
     )
     id = 1
     resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
@@ -283,7 +284,7 @@ def testSchedules(token):
     else:
         for _item in resp.json():
             # print(_item)
-            print('Schedule: {} {} {} {} {}'.format(_item['id'], _item['start'], _item['end'], _item['person']['name'], _item['location']['name']))
+            print('Schedule: {} {} {} {} {} {}'.format(_item['title'], _item['id'], _item['start'], _item['end'], _item['person']['name'], _item['location']['name']))
 
 
 def testTodaySchedules(token, id):
@@ -369,7 +370,7 @@ def main():
     lastName = 'ODonnell'
     #register(firstName, lastName, email, password)
     data = login(email, password)
-    print(data)
+    #print(data)
     token = data['token']
     #id = data['id']
     #print('Got token:', token)
@@ -379,7 +380,7 @@ def main():
     
     for i in range(0):
 
-        _ = fillEmployee(token)
+        #_ = fillEmployee(token)
         _ = fillLocation(token)
 
         #locationId = getRandomLocationId(token)
@@ -388,7 +389,7 @@ def main():
         #personId = getRandomEmployeeId(token)
         #updateEmployee(token, personId)
 
-        #fills = random.randint(15, 50)
+        #fills = random.randint(2, 5)
         # print(personId, locationId)
         #addSchedule(personId, locationId, fills, token)
         #getEmployeeSchedule(token, personId)
@@ -396,21 +397,21 @@ def main():
 
     for i in range(0):
         locationId = getRandomLocationId(token)
-        personId = getRandomEmployeeId(token)
-        fills = random.randint(2, 15)
-        addSchedule(personId, locationId, fills, token)
+        #personId = getRandomEmployeeId(token)
+        fills = random.randint(5, 5)
+        addSchedule(1, locationId, fills, token)
         
     #  now get data
     # testEmployees(token)
     #attachEmployeeSchool(token, personId, locationId)
     #testEmployees(token)
     #testLocations(token)
-    testSchedules(token)
+    #testSchedules(token)
     #testTodaySchedules(token, 3)
     #person = getCurrentUser(token, id)
     #getScheduleById(token, 1)
     #updateSchedule(token, 1, personId, locationId)
-    #getScheduleById(token, 1)
+    getScheduleById(token, 1)
     # print('person',person)
 
     #getPagedSchedules(token)
