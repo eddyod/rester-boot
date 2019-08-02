@@ -9,8 +9,12 @@ import com.mephistosoftware.rester.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.validation.Valid;
 
 import java.util.Calendar;
@@ -71,9 +75,12 @@ public class ScheduleController {
 	@GetMapping("/schedules/today/{employeeId}")
 	public List<Schedule> getTodaySchedulesByEmployee(@PathVariable Long employeeId) {
 		Date today = Calendar.getInstance().getTime();
-		return scheduleRepository.findTodayByEmployee(employeeId, today);
+		try {
+			return scheduleRepository.findTodayByEmployee(employeeId, today);
+		} catch (ResourceNotFoundException re) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedules not found", re);
+		}
 	}
-
 
 	/**
 	 * Gets list of schedules by location
@@ -87,8 +94,8 @@ public class ScheduleController {
 	}
 
 	@PostMapping("/scheduleXXXX/{employeeId}/{locationId}")
-	public Schedule createScheduleXXX(@PathVariable Long employeeId,
-			@PathVariable Long locationId, @Valid @RequestBody Schedule schedule) {
+	public Schedule createScheduleXXX(@PathVariable Long employeeId, @PathVariable Long locationId,
+			@Valid @RequestBody Schedule schedule) {
 		return personRepository.findById(employeeId).map(employee -> {
 			schedule.setPerson(employee);
 			return locationRepository.findById(locationId).map(location -> {
@@ -101,12 +108,12 @@ public class ScheduleController {
 
 	@PostMapping("/schedule")
 	public Schedule addSchedule(@Valid @RequestBody Schedule schedule) {
-		schedule.setCompleted(false);		
+		schedule.setCompleted(false);
 		return scheduleRepository.save(schedule);
 	}
 
 	@PutMapping("/schedule/{id}/{employeeId}/{locationId}")
-	public Schedule putSchedule(@PathVariable Long id, @PathVariable Long employeeId, @PathVariable Long locationId, 
+	public Schedule putSchedule(@PathVariable Long id, @PathVariable Long employeeId, @PathVariable Long locationId,
 			@Valid @RequestBody Schedule schedule) {
 		return personRepository.findById(employeeId).map(employee -> {
 			schedule.setPerson(employee);
@@ -125,9 +132,10 @@ public class ScheduleController {
 	}
 
 	/**
-	 * This gets called from the teacher when they show up at the school
-	 * and click the 'i showed up button'
-	 * @param scheduleId primary int
+	 * This gets called from the teacher when they show up at the school and click
+	 * the 'i showed up button'
+	 * 
+	 * @param scheduleId      primary int
 	 * @param scheduleRequest body of schedule
 	 * @return a object of schedule or an error
 	 */
@@ -147,20 +155,18 @@ public class ScheduleController {
 		}).orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + scheduleId));
 
 	}
-	
+
 	/**
 	 * Gets paged schedules
+	 * 
 	 * @return page of schedules
 	 */
 	@GetMapping("/schedules/paged")
-	 public Page<Schedule> getPagedSchedules(
-			 @RequestParam("filter") String filter,
-			 @RequestParam("ordering") String ordering,
-			 @RequestParam("limit") int limit,
-			 @RequestParam("offset") int offset
-			 ) {
+	public Page<Schedule> getPagedSchedules(@RequestParam("filter") String filter,
+			@RequestParam("ordering") String ordering, @RequestParam("limit") int limit,
+			@RequestParam("offset") int offset) {
 		Pageable pageable = new OffsetBasedPageRequest(offset, limit);
-	 	return scheduleRepository.findAll(pageable);
-	 }
+		return scheduleRepository.findAll(pageable);
+	}
 
 }

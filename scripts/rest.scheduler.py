@@ -84,8 +84,8 @@ def fillEmployee(token):
     url = API_URL + '/employee'
     fake = Faker()
     params = dict(
-        firstName=fake.first_name(),
-        lastName=fake.last_name(),
+        firstName=fake.firstName(),
+        lastName=fake.lastName(),
         email=fake.email(),
         phone=fake.phone_number(),
         address=fake.street_address()
@@ -126,8 +126,8 @@ def updateEmployee(token, personId):
     url = '{}/person/{}'.format(API_URL, personId)
     fake = Faker()
     params = dict(
-        firstName = fake.first_name(),
-        lastName = fake.last_name(),
+        firstName = fake.firstName(),
+        lastName = fake.lastName(),
         email = fake.email(),
         phone = fake.phone_number(),
         address = fake.street_address(),
@@ -172,17 +172,16 @@ def getRandomLocationId(token):
     return choice(ids)
 
 
-def insertUser(first_name, last_name, username, email, password, token):
-    print('Inserting user:', first_name, last_name, username, email, password)
+def insertEmployee(firstName, lastName, email, token):
     params = dict(
-        first_name=first_name,
-        last_name=last_name,
-        username=username,
+        firstName=firstName,
+        lastName=lastName,
         email=email,
-        password=password
+        address='123 Main st'
         )
-    url = API_URL + 'api/users'
+    url = API_URL + '/employee'
     resp = requests.post(url=url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
+    print(resp)
     data = resp.json()  # Check the JSON Response Content documentation below
 
 
@@ -342,7 +341,7 @@ def register(firstName, lastName, email, password):
     try:
         resp = requests.post(url=url, json=params)
         data = resp.json()  # Check the JSON Response Content documentation below
-        # print(data)
+        #print(data)
     except:
         print('Registering failed')
 
@@ -376,7 +375,8 @@ def main():
     #print('Got token:', token)
     #print('Got id:', id)
     #  insert
-    
+    insertEmployee(firstName, lastName, email, token)
+
     
     for i in range(0):
 
@@ -411,7 +411,7 @@ def main():
     #person = getCurrentUser(token, id)
     #getScheduleById(token, 1)
     #updateSchedule(token, 1, personId, locationId)
-    getScheduleById(token, 1)
+    #getScheduleById(token, 1)
     # print('person',person)
 
     #getPagedSchedules(token)

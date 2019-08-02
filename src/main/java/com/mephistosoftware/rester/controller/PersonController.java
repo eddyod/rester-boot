@@ -9,6 +9,7 @@ import com.mephistosoftware.rester.repository.PersonRepository;
 import com.mephistosoftware.rester.security.SecurityConstants;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 
@@ -108,16 +111,25 @@ public class PersonController {
 	 * @return the person object
 	 */
 	@PostMapping("/employee")
-	public ResponseEntity<Person> addEmployee(@Valid @RequestBody Person person) {
+	public ResponseEntity<Person> addEmployeeXX(@Valid @RequestBody Person person) {
 		person.setActive(true);
 		person.setPersonType(SecurityConstants.TEACHER);
 		try {
 			personRepository.save(person);
+		} catch (DataIntegrityViolationException re) {
+			throw new DataIntegrityViolationException("Redundant email");
 		} catch (PersistenceException pe) {
 			System.out.println("could not persist person");
 			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
 		}
 		return new ResponseEntity<Person>(person, HttpStatus.OK);
+	}
+
+	@PostMapping("/employeeXXX")
+	public Person addEmployee(@Valid @RequestBody Person person) {
+		person.setActive(true);
+		person.setPersonType(SecurityConstants.TEACHER);
+		return personRepository.save(person);
 	}
 
 	@PostMapping("/person")
