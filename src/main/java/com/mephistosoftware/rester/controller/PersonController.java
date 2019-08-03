@@ -16,11 +16,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.Set;
 
 // @CrossOrigin( origins = "*" )
 @RestController
+@Validated
 public class PersonController {
 
 	@Autowired
@@ -66,7 +67,7 @@ public class PersonController {
 	}
 
 	@GetMapping("/person/{id}")
-	public Person getPersonById(@PathVariable Long id) {
+	public Person getPersonById(@PathVariable @Min(1) Long id) {
 		return personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
@@ -119,17 +120,9 @@ public class PersonController {
 		} catch (DataIntegrityViolationException re) {
 			throw new DataIntegrityViolationException("Redundant email");
 		} catch (PersistenceException pe) {
-			System.out.println("could not persist person");
 			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
 		}
 		return new ResponseEntity<Person>(person, HttpStatus.OK);
-	}
-
-	@PostMapping("/employeeXXX")
-	public Person addEmployee(@Valid @RequestBody Person person) {
-		person.setActive(true);
-		person.setPersonType(SecurityConstants.TEACHER);
-		return personRepository.save(person);
 	}
 
 	@PostMapping("/person")
@@ -138,7 +131,7 @@ public class PersonController {
 	}
 
 	@PutMapping("/person/{id}")
-	public Person updatePerson(@PathVariable(value = "id") Long id, @Valid @RequestBody Person personRequest) {
+	public Person updatePerson(@PathVariable @Min(1) Long id, @Valid @RequestBody Person personRequest) {
 		return personRepository.findById(id).map(person -> {
 			person.setFirstName(personRequest.getFirstName());
 			person.setLastName(personRequest.getLastName());
@@ -151,7 +144,7 @@ public class PersonController {
 	}
 
 	@DeleteMapping("/person/{id}")
-	public ResponseEntity<?> deletePerson(@PathVariable Long id) {
+	public ResponseEntity<?> deletePerson(@PathVariable @Min(1) Long id) {
 		return personRepository.findById(id).map(person -> {
 			personRepository.delete(person);
 			return ResponseEntity.ok().build();
@@ -161,7 +154,7 @@ public class PersonController {
 	
 
 	@PostMapping("/employee/{employeeId}/{locationId}")
-	public Person attachEmployeeSchool(@PathVariable Long employeeId, @PathVariable Long locationId) {
+	public Person attachEmployeeSchool(@PathVariable @Min(1) Long employeeId, @PathVariable @Min(1) Long locationId) {
 		Set<Location> schools = new HashSet<>();
 		return personRepository.findById(employeeId).map(employee -> {
 			return locationRepository.findById(locationId).map(location -> {

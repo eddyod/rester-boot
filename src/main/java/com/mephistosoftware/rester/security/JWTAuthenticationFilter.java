@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hibernate.Hibernate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,12 +21,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.mephistosoftware.rester.model.Location;
 import com.mephistosoftware.rester.model.Person;
-import com.mephistosoftware.rester.repository.LocationRepository;
 import com.mephistosoftware.rester.repository.PersonRepository;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
@@ -41,8 +38,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	private PersonRepository personRepository;
 	
-	private LocationRepository locationRepository;
-
 	private AuthenticationManager authenticationManager;
 
 	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -59,32 +54,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private String buildTokenXXX(String token, String email) {
-		Person person;
-		StringBuilder returnToken = new StringBuilder("");
-		returnToken.append("{\"");
-		returnToken.append(SecurityConstants.TOKEN);
-		returnToken.append("\":\"");
-		returnToken.append(token);
-		returnToken.append("\"");
-		if (personRepository != null) {
-			person = personRepository.findByEmail(email);
-			returnToken.append(",\"id\":\"");
-			returnToken.append(person.getId());
-			returnToken.append("\",\"email\":\"");
-			returnToken.append(email);
-			returnToken.append("\"");
-			returnToken.append(",\"personType\":\"");
-			returnToken.append(person.getPersonType());
-		} else {
-			System.out.println("repo IS NULL ");			
-		}
-		
-		returnToken.append("\"}");
-
-		return returnToken.toString();
 	}
 
 	private String buildToken(String token, String email) throws JsonProcessingException {

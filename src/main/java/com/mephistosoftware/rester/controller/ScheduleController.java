@@ -11,17 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.server.ResponseStatusException;
-
 import javax.validation.Valid;
-
+import javax.validation.constraints.Min;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 @RestController
+@Validated
 public class ScheduleController {
 
 	@Autowired
@@ -50,7 +49,7 @@ public class ScheduleController {
 	 * @return a schedule object
 	 */
 	@GetMapping("/schedule/{id}")
-	public Schedule getScheduleById(@PathVariable Long id) {
+	public Schedule getScheduleById(@PathVariable @Min(1) Long id) {
 		return scheduleRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + id));
 	}
@@ -62,7 +61,7 @@ public class ScheduleController {
 	 * @return a list of schedules per employee
 	 */
 	@GetMapping("/schedules/employee/{employeeId}")
-	public List<Schedule> getSchedulesByEmployee(@PathVariable Long employeeId) {
+	public List<Schedule> getSchedulesByEmployee(@PathVariable @Min(1) Long employeeId) {
 		return scheduleRepository.findByEmployee(employeeId);
 	}
 
@@ -73,15 +72,11 @@ public class ScheduleController {
 	 * @return a list of schedules per employee and today
 	 */
 	@GetMapping("/schedules/today/{employeeId}")
-	public List<Schedule> getTodaySchedulesByEmployee(@PathVariable Long employeeId) {
+	public ResponseEntity<List<Schedule>> getTodaySchedulesByEmployee(@PathVariable @Min(1) Long employeeId) {
 		Date today = Calendar.getInstance().getTime();
-		try {
-			return scheduleRepository.findTodayByEmployee(employeeId, today);
-		} catch (ResourceNotFoundException re) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedules not found", re);
-		}
+		return new ResponseEntity<>(scheduleRepository.findTodayByEmployee(employeeId, today), HttpStatus.OK);
 	}
-
+	
 	/**
 	 * Gets list of schedules by location
 	 * 
@@ -89,7 +84,7 @@ public class ScheduleController {
 	 * @return a list of schedules per location
 	 */
 	@GetMapping("/schedules/location/{locationId}")
-	public List<Schedule> getSchedulesByLocation(@PathVariable Long locationId) {
+	public List<Schedule> getSchedulesByLocation(@PathVariable @Min(1) Long locationId) {
 		return scheduleRepository.findByLocation(locationId);
 	}
 
@@ -113,8 +108,8 @@ public class ScheduleController {
 	}
 
 	@PutMapping("/schedule/{id}/{employeeId}/{locationId}")
-	public Schedule putSchedule(@PathVariable Long id, @PathVariable Long employeeId, @PathVariable Long locationId,
-			@Valid @RequestBody Schedule schedule) {
+	public Schedule putSchedule(@PathVariable Long id, @PathVariable @Min(1) Long employeeId,
+			@PathVariable @Min(1) Long locationId, @Valid @RequestBody Schedule schedule) {
 		return personRepository.findById(employeeId).map(employee -> {
 			schedule.setPerson(employee);
 			return locationRepository.findById(locationId).map(location -> {
@@ -125,7 +120,8 @@ public class ScheduleController {
 	}
 
 	@PutMapping("/schedule/{scheduleId}")
-	public Schedule updateSchedule(@PathVariable Long scheduleId, @Valid @RequestBody Schedule scheduleRequest) {
+	public Schedule updateSchedule(@PathVariable @Min(1) Long scheduleId,
+			@Valid @RequestBody Schedule scheduleRequest) {
 		return scheduleRepository.findById(scheduleId).map(schedule -> {
 			return scheduleRepository.save(scheduleRequest);
 		}).orElseThrow(() -> new ResourceNotFoundException("Schedule not found with id " + scheduleId));
@@ -140,7 +136,8 @@ public class ScheduleController {
 	 * @return a object of schedule or an error
 	 */
 	@PutMapping("/schedule/completed/{scheduleId}")
-	public Schedule updateScheduleArrived(@PathVariable Long scheduleId, @Valid @RequestBody Schedule scheduleRequest) {
+	public Schedule updateScheduleArrived(@PathVariable @Min(1) Long scheduleId,
+			@Valid @RequestBody Schedule scheduleRequest) {
 		return scheduleRepository.findById(scheduleId).map(schedule -> {
 			scheduleRequest.setCompleted(true);
 			return scheduleRepository.save(scheduleRequest);
@@ -148,7 +145,7 @@ public class ScheduleController {
 	}
 
 	@DeleteMapping("/schedule/{scheduleId}")
-	public ResponseEntity<?> deleteSchedule(@PathVariable Long scheduleId) {
+	public ResponseEntity<?> deleteSchedule(@PathVariable @Min(1) Long scheduleId) {
 		return scheduleRepository.findById(scheduleId).map(schedule -> {
 			scheduleRepository.delete(schedule);
 			return ResponseEntity.ok().build();

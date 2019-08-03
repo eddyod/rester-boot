@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -31,7 +30,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         response.sendError(HttpStatus.NOT_FOUND.value());
     }
     */
-
+	
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<CustomErrorResponse> customHandleNotFound(Exception ex, WebRequest request) {
         CustomErrorResponse errors = new CustomErrorResponse();
@@ -41,15 +40,30 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
     
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<CustomErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    // @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
+    public ResponseEntity<CustomErrorResponse> handleMethodArgumentTypeMismatch(
+      MethodArgumentTypeMismatchException ex, WebRequest request) {
         CustomErrorResponse errors = new CustomErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
-        errors.setError(ex.getMessage());
-        errors.setStatus(HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+        String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
+        errors.setError(error);
+        errors.setStatus(HttpStatus.BAD_REQUEST.value());     
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    /*
+    */
+    
+	@ExceptionHandler(value = { NumberFormatException.class, IllegalStateException.class })
+	public ResponseEntity<Object> handleMethodNumberFormatException(NumberFormatException ex,
+			WebRequest request) {
+		CustomErrorResponse errors = new CustomErrorResponse();
+		errors.setTimestamp(LocalDateTime.now());
+		errors.setError(ex.getMessage());
+		errors.setStatus(HttpStatus.PAYMENT_REQUIRED.value());
+		return new ResponseEntity<>("asdfasdfadsf", HttpStatus.PAYMENT_REQUIRED);
+	}
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<CustomErrorResponse> constraintViolationException(ConstraintViolationException ex) throws IOException {
@@ -68,12 +82,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         errors.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
         return new ResponseEntity<>(errors, HttpStatus.NOT_ACCEPTABLE);
     }
-    /*
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public void dataIntegrityViolationException(HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.BAD_REQUEST.value());
-    }
-    */
 
     // error handle for @Valid
     @Override

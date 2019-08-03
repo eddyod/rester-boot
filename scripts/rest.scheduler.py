@@ -8,8 +8,8 @@ import datetime as dt
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
 ##API_URL = "http://www.mephistosoftware.com/premier-rester"
-API_URL = "http://10.195.4.147:8090"
-#API_URL = "http://localhost:8090"
+#API_URL = "http://10.195.4.147:8090"
+API_URL = "http://localhost:8090"
 
 def fillSchedule(personId, locationId, amount, token):
     url = '{}/schedule'.format(API_URL)
@@ -289,13 +289,15 @@ def testSchedules(token):
 def testTodaySchedules(token, id):
     url = '{}/schedules/today/{}'.format(API_URL, id)
     resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
+    print(resp)
+    """
     if resp.status_code != 200:
-        print('Error getting schedules.',resp.status_code)
+        print('Error getting schedules.',resp)
     else:
         for _item in resp.json():
             # print(_item)
             print('Schedule: {} {} {} {}'.format(_item['id'], _item['start'], _item['person']['name'], _item['location']['name']))
-
+    """
 
 def getEmployeeSchedule(token, personId):
     url = '{}/schedules/employee/{}'.format(API_URL, personId)
@@ -307,6 +309,16 @@ def getEmployeeSchedule(token, personId):
 
 def getScheduleById(token, id):
     url = '{}/schedule/{}'.format(API_URL, id)
+    resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
+    print(resp.json())
+
+def getLocationById(token, id):
+    url = '{}/location/{}'.format(API_URL, id)
+    resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
+    print(resp.json())
+
+def getPersonById(token, id):
+    url = '{}/person/{}'.format(API_URL, id)
     resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
     print(resp.json())
 
@@ -375,7 +387,7 @@ def main():
     #print('Got token:', token)
     #print('Got id:', id)
     #  insert
-    insertEmployee(firstName, lastName, email, token)
+    #insertEmployee(firstName, lastName, email, token)
 
     
     for i in range(0):
@@ -407,9 +419,11 @@ def main():
     #testEmployees(token)
     #testLocations(token)
     #testSchedules(token)
-    #testTodaySchedules(token, 3)
+    testTodaySchedules(token, "dd")
     #person = getCurrentUser(token, id)
-    #getScheduleById(token, 1)
+    getScheduleById(token, 1)
+    getLocationById(token, 1)
+    getPersonById(token, 1)
     #updateSchedule(token, 1, personId, locationId)
     #getScheduleById(token, 1)
     # print('person',person)

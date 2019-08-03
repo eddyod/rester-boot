@@ -70,8 +70,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.and().csrf().disable()
 		.authorizeRequests()
 		.antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-		.antMatchers(HttpMethod.GET, "/health", "/employees", "/person/").permitAll()
-		// .anyRequest().authenticated()
+		.antMatchers(HttpMethod.GET, "/health").permitAll()
+		.anyRequest().authenticated()
 		.and()
 		.addFilter(new JWTAuthenticationFilter(authenticationManager()))
 		.addFilter(new JWTAuthorizationFilter(authenticationManager()));
