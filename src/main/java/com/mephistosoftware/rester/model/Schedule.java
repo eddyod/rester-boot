@@ -22,8 +22,8 @@ public class Schedule extends AuditModel {
     private Date end;
     private BigDecimal payRate;
     private Boolean completed; 
-    private Integer personId;
-    private Integer locationId;
+    private Long personId;
+    private Long locationId;
     
     private Person person;
     private Location location;
@@ -71,21 +71,21 @@ public class Schedule extends AuditModel {
 
 	@NotNull(message = "A schedule must have a teacher.")
 	@Column(name = "person_id", nullable = false)
-    public Integer getPersonId() {
+    public Long getPersonId() {
 		return personId;
 	}
 
-	public void setPersonId(Integer personId) {
+	public void setPersonId(Long personId) {
 		this.personId = personId;
 	}
 
 	@NotNull(message = "A schedule must have a school.")
 	@Column(name = "location_id", nullable = false)
-	public Integer getLocationId() {
+	public Long getLocationId() {
 		return locationId;
 	}
 
-	public void setLocationId(Integer locationId) {
+	public void setLocationId(Long locationId) {
 		this.locationId = locationId;
 	}
 	
