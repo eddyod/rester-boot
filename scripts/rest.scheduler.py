@@ -55,7 +55,7 @@ def addSchedule(personId, locationId, amount, token):
         try:
             resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
         except Exception as e:
-            print('Error filling schedule',e)
+            print('Error filling schedule',e,resp.content)
 
 def updateSchedule(token, id, personId, locationId):
     url = '{}/schedule/{}'.format(API_URL, id)
@@ -76,7 +76,7 @@ def updateSchedule(token, id, personId, locationId):
             }
     resp = requests.put(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     if resp.status_code != 200:
-        print('Error updating schedule.')
+        print('Error updating schedule.', resp.content)
     else:
         print(resp.json())
 
@@ -91,6 +91,11 @@ def fillEmployee(token):
         address=fake.street_address()
     )
     resp = requests.post(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
+    if resp.status_code == 200:
+        print('Updated employee OK')
+    else:
+        print('Error updating employee.',resp.content)
+
     data = resp.json()  # Check the JSON Response Content documentation below
     return data['id']
 
@@ -122,13 +127,13 @@ def getRandomEmployeeId(token):
     return choice(ids)
 
 
-def updateEmployee(token, personId):
+def updateEmployee(token, personId, email):
     url = '{}/person/{}'.format(API_URL, personId)
     fake = Faker()
     params = dict(
-        firstName = fake.firstName(),
-        lastName = fake.lastName(),
-        email = fake.email(),
+        firstName = fake.first_name(),
+        lastName = fake.last_name(),
+        email = email,
         phone = fake.phone_number(),
         address = fake.street_address(),
         active = 1
@@ -137,7 +142,7 @@ def updateEmployee(token, personId):
     if resp.status_code == 200:
         print('Updated employee OK')
     else:
-        print('Error updating employee.',resp.status_code)
+        print('Error updating employee.',resp.content)
 
 
 def attachEmployeeSchool(token, employeeId, locationId):
@@ -147,7 +152,7 @@ def attachEmployeeSchool(token, employeeId, locationId):
     if resp.status_code == 200:
         print('Updated employee OK')
     else:
-        print('Error updating employee.',resp.status_code)
+        print('Error updating employee.',resp.content)
 
 
 def updateLocation(token, locationId):
@@ -159,7 +164,7 @@ def updateLocation(token, locationId):
     )
     resp = requests.put(url=url, json=params, headers={'Authorization': 'JWT {}'.format(token)})
     if resp.status_code != 200:
-        print('Error updating location.')
+        print('Error updating location.', resp.content)
 
 def getRandomLocationId(token):
     try:
@@ -181,7 +186,7 @@ def insertEmployee(firstName, lastName, email, token):
         )
     url = API_URL + '/employee'
     resp = requests.post(url=url, headers={'Authorization': 'JWT {}'.format(token)}, json=params)
-    print(resp)
+    print(resp.content)
     data = resp.json()  # Check the JSON Response Content documentation below
 
 
@@ -289,15 +294,13 @@ def testSchedules(token):
 def testTodaySchedules(token, id):
     url = '{}/schedules/today/{}'.format(API_URL, id)
     resp = requests.get(url,  headers={'Authorization': 'JWT {}'.format(token)})
-    print(resp)
-    """
     if resp.status_code != 200:
-        print('Error getting schedules.',resp)
+        print('Error getting schedules.',resp.content)
     else:
         for _item in resp.json():
             # print(_item)
             print('Schedule: {} {} {} {}'.format(_item['id'], _item['start'], _item['person']['name'], _item['location']['name']))
-    """
+    
 
 def getEmployeeSchedule(token, personId):
     url = '{}/schedules/employee/{}'.format(API_URL, personId)
@@ -388,6 +391,7 @@ def main():
     #print('Got id:', id)
     #  insert
     #insertEmployee(firstName, lastName, email, token)
+    #insertEmployee(firstName, lastName, "joe", token)
 
     
     for i in range(0):
@@ -407,9 +411,9 @@ def main():
         #getEmployeeSchedule(token, personId)
         # getLocationSchedule(token, locationId)
 
-    for i in range(0):
+    for i in range(5):
         locationId = getRandomLocationId(token)
-        #personId = getRandomEmployeeId(token)
+        personId = getRandomEmployeeId(token)
         fills = random.randint(5, 5)
         addSchedule(1, locationId, fills, token)
         
@@ -419,13 +423,14 @@ def main():
     #testEmployees(token)
     #testLocations(token)
     #testSchedules(token)
-    testTodaySchedules(token, "dd")
+    testTodaySchedules(token, 1)
     #person = getCurrentUser(token, id)
-    getScheduleById(token, 1)
-    getLocationById(token, 1)
-    getPersonById(token, 1)
-    #updateSchedule(token, 1, personId, locationId)
-    #getScheduleById(token, 1)
+    #getScheduleById(token, "asd")
+    #getLocationById(token, "dd")
+    #getPersonById(token, "X1")
+    #updateSchedule(token, 1, 1, 666)
+    #updateEmployee(token, 1, 'joe')
+    #updateLocation(token, 11111)
     # print('person',person)
 
     #getPagedSchedules(token)

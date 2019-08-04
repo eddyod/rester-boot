@@ -61,8 +61,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 		CustomErrorResponse errors = new CustomErrorResponse();
 		errors.setTimestamp(LocalDateTime.now());
 		errors.setError(ex.getMessage());
-		errors.setStatus(HttpStatus.PAYMENT_REQUIRED.value());
-		return new ResponseEntity<>("asdfasdfadsf", HttpStatus.PAYMENT_REQUIRED);
+		errors.setStatus(HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<>("asdfasdfadsf", HttpStatus.BAD_REQUEST);
 	}
 
     @ExceptionHandler(ConstraintViolationException.class)
