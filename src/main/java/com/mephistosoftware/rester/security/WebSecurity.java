@@ -45,22 +45,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// change back to SIGN_UP_URL for all security
-		/*
-		http
-		.addFilterBefore(customCorsFilter(), SessionManagementFilter.class)
-		.formLogin().loginPage("/login").usernameParameter("email")
-        .successHandler(successHandler())
-        .failureHandler(failureHandler())
-		.and().csrf().disable()
-		.authorizeRequests().antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-		.antMatchers(HttpMethod.GET, "/health", "/info").permitAll().anyRequest().authenticated().and()
-		.addFilter(new JWTAuthenticationFilter(authenticationManager()))
-		.addFilter(new JWTAuthorizationFilter(authenticationManager()))
-		// this disables session creation on Spring Security
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		*/
-		// change back to SIGN_UP_URL for all security
 		http
 		.cors()
 		.and()
@@ -74,9 +58,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.anyRequest().authenticated()
 		.and()
 		.addFilter(new JWTAuthenticationFilter(authenticationManager()))
-		.addFilter(new JWTAuthorizationFilter(authenticationManager()));
-		
-		
+		.addFilter(new JWTAuthorizationFilter(authenticationManager()));		
 	}
 	/*
 	CustomCorsFilter customCorsFilter() {
@@ -106,7 +88,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                                                  HttpServletResponse response, AuthenticationException exception)
                      throws IOException, ServletException {
                  response.setContentType("text/html;charset=UTF-8");
-                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed. Wrong username or password or both");
+                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed. Wrong email or password or both");
              }
          };
      }
