@@ -52,6 +52,13 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+
+		<dependency>
+			<groupId>org.springframework.social</groupId>
+			<artifactId>spring-social-core</artifactId>
+			<version>1.1.4.RELEASE</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -77,7 +84,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			</dependency>
+		</dependency>
 
 
 	</dependencies>
@@ -88,28 +95,16 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
-			<!-- copy the service's jar file from target into the root directory 	of the image -->
-			<!--  
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<configuration>
-					<imageName>mephistosoftware/${project.build.finalName}</imageName>
-					<baseImage>java</baseImage>
-					<entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
-					
-					<resources>
-						<resource>
-							<targetPath>/</targetPath>
-							<directory>${project.build.directory}</directory>
-							<include>${project.build.finalName}.jar</include>
-						</resource>
-					</resources>
-				</configuration>
-			</plugin>
-			-->
-			
+
+			<!-- copy the service's jar file from target into the root directory of 
+				the image -->
+			<!-- <plugin> <groupId>com.spotify</groupId> <artifactId>docker-maven-plugin</artifactId> 
+				<configuration> <imageName>mephistosoftware/${project.build.finalName}</imageName> 
+				<baseImage>java</baseImage> <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint> 
+				<resources> <resource> <targetPath>/</targetPath> <directory>${project.build.directory}</directory> 
+				<include>${project.build.finalName}.jar</include> </resource> </resources> 
+				</configuration> </plugin> -->
+
 		</plugins>
 	</build>
 

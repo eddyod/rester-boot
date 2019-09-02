@@ -18,10 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +36,7 @@ public class PersonController {
 
 	@Autowired
 	private PersonRepository personRepository;
-	
+
 	@Autowired
 	private LocationRepository locationRepository;
 
@@ -42,8 +45,8 @@ public class PersonController {
 	public PersonController(PersonRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.personRepository = userRepository;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-	}	
-	
+	}
+
 	/**
 	 * This is the non-secured url where an anonymous user can register *
 	 * 
@@ -63,6 +66,28 @@ public class PersonController {
 		} else {
 			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
 		}
+
+	}
+	// facebook token "EAAOeEUXu74kBABpBPdMynFsVybbaN24cbe3FQH9aEOnabPQkoUm8rJyp8wFHzk2Gb56ZCYimYoFWTTeNRzi1MSEilUEGuhDDNZCq1ZA9yu9Gpp6Q46egamSRIq5ZCqtvZBAhhHMG77q8t5oZATXKIFXOgdz4Rycjw5NsOLsQJapZAYhkcZBapdOytrndBSugZBfL4VZBSGPBgmSwZDZD"
+
+	/**
+	 * Test if person is in Database, if so, just return person with token
+	 * 
+	 * @param user object of Person
+	 * @return an Person object
+	 */
+	@PostMapping(SecurityConstants.SOCIAL_REGISTER)
+	public ResponseEntity<Person> registerSocialLogin(@Valid @RequestBody Person person) {
+
+		try {
+			person = personRepository.findByEmail(person.getEmail());
+		} catch (NoResultException nre) {
+			person.setSchools(new HashSet<Location>());
+			person.setPersonType(SecurityConstants.TEACHER);
+			person = personRepository.save(person);
+		}
+
+		return new ResponseEntity<Person>(person, HttpStatus.OK);
 
 	}
 
@@ -151,7 +176,6 @@ public class PersonController {
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 
 	}
-	
 
 	@PostMapping("/employee/{employeeId}/{locationId}")
 	public Person attachEmployeeSchool(@PathVariable @Min(1) Long employeeId, @PathVariable @Min(1) Long locationId) {
@@ -164,6 +188,5 @@ public class PersonController {
 			}).orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + locationId));
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + employeeId));
 	}
-
 
 }
