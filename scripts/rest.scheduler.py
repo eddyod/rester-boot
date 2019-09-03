@@ -439,10 +439,10 @@ def main():
     #  now get data
     # testEmployees(token)
     #attachEmployeeSchool(token, personId, locationId)
-    #testEmployees(token)
+    testEmployees(token)
     #testLocations(token)
     #testSchedules(token)
-    testTodaySchedules(token, 1)
+    #testTodaySchedules(token, 1)
     #person = getCurrentUser(token, id)
     #getScheduleById(token, "asd")
     #getLocationById(token, "dd")
