@@ -1,5 +1,8 @@
 package com.mephistosoftware.rester.controller;
 
+import com.auth0.jwt.JWT;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mephistosoftware.rester.exception.ResourceNotFoundException;
 import com.mephistosoftware.rester.model.Location;
 import com.mephistosoftware.rester.model.Person;
@@ -24,7 +27,12 @@ import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import static com.mephistosoftware.rester.security.SecurityConstants.EXPIRATION_TIME;
+import static com.mephistosoftware.rester.security.SecurityConstants.SECRET;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,27 +76,42 @@ public class PersonController {
 		}
 
 	}
-	// facebook token "EAAOeEUXu74kBABpBPdMynFsVybbaN24cbe3FQH9aEOnabPQkoUm8rJyp8wFHzk2Gb56ZCYimYoFWTTeNRzi1MSEilUEGuhDDNZCq1ZA9yu9Gpp6Q46egamSRIq5ZCqtvZBAhhHMG77q8t5oZATXKIFXOgdz4Rycjw5NsOLsQJapZAYhkcZBapdOytrndBSugZBfL4VZBSGPBgmSwZDZD"
+	// facebook token
+	// "EAAOeEUXu74kBABpBPdMynFsVybbaN24cbe3FQH9aEOnabPQkoUm8rJyp8wFHzk2Gb56ZCYimYoFWTTeNRzi1MSEilUEGuhDDNZCq1ZA9yu9Gpp6Q46egamSRIq5ZCqtvZBAhhHMG77q8t5oZATXKIFXOgdz4Rycjw5NsOLsQJapZAYhkcZBapdOytrndBSugZBfL4VZBSGPBgmSwZDZD"
 
 	/**
 	 * Test if person is in Database, if so, just return person with token
 	 * 
 	 * @param user object of Person
 	 * @return an Person object
+	 * @throws JsonProcessingException 
 	 */
 	@PostMapping(SecurityConstants.SOCIAL_REGISTER)
-	public ResponseEntity<Person> registerSocialLogin(@Valid @RequestBody Person person) {
+	public String registerSocialLogin(@Valid @RequestBody Person validatePerson) throws JsonProcessingException {
+		String email = validatePerson.getEmail();
+		String token = JWT.create().withSubject(email)
+				.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).sign(HMAC512(SECRET.getBytes()));
 
-		try {
-			person = personRepository.findByEmail(person.getEmail());
-		} catch (NoResultException nre) {
-			person.setSchools(new HashSet<Location>());
-			person.setPersonType(SecurityConstants.TEACHER);
-			person = personRepository.save(person);
+		Person person = personRepository.findByEmail(email);
+		if (person == null) { 
+			validatePerson.setPersonType(SecurityConstants.TEACHER);
+			person = personRepository.save(validatePerson);
 		}
+		String returnToken = "";
+		returnToken = buildToken(token, person);
+		System.out.println("Done with social login, person token is " + returnToken);
+		return returnToken;
 
-		return new ResponseEntity<Person>(person, HttpStatus.OK);
+	}
 
+	private String buildToken(String token, Person person) throws JsonProcessingException {
+		String returnToken = "";
+		ObjectMapper mapper = new ObjectMapper();
+		person.setToken(token);
+		Set<Location> schools = personRepository.getSchoolsByEmployeeId(person.getId());
+		person.setSchools(schools);
+		returnToken = mapper.writeValueAsString(person);
+		return returnToken;
 	}
 
 	@GetMapping("/person/{id}")

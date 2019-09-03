@@ -7,6 +7,8 @@ import datetime as dt
 
 fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
+#facebookToken = "EAAOeEUXu74kBABpBPdMynFsVybbaN24cbe3FQH9aEOnabPQkoUm8rJyp8wFHzk2Gb56ZCYimYoFWTTeNRzi1MSEilUEGuhDDNZCq1ZA9yu9Gpp6Q46egamSRIq5ZCqtvZBAhhHMG77q8t5oZATXKIFXOgdz4Rycjw5NsOLsQJapZAYhkcZBapdOytrndBSugZBfL4VZBSGPBgmSwZDZD"
+
 ##API_URL = "http://www.mephistosoftware.com/premier-rester"
 #API_URL = "http://10.195.4.147:8090"
 API_URL = "http://localhost:8090"
@@ -360,6 +362,20 @@ def register(firstName, lastName, email, password):
     except:
         print('Registering failed')
 
+def socialLogin(firstName, lastName, email):
+    url = API_URL + '/social-login'
+    data = ''
+    params = dict(
+        firstName=firstName,
+        lastName=lastName,
+        email=email)
+    try:
+        resp = requests.post(url=url, json=params)
+        data = resp.json()  # Check the JSON Response Content documentation below
+    except:
+        data = 'Social login failed'
+    return data
+
 
 def random_date(start, end):
     return start + dt.timedelta(
@@ -378,13 +394,16 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'jasonodonnell@yahoo.com'
-    password = 'j1234567'
-    firstName = 'Jason'
+    email = 'jasonodonnellXXX@yahoo.com'
+    #password = 'j1234567'
+    firstName = 'Eddy'
+    lastName = 'ODonnell'
+    #token = facebookToken
     lastName = 'ODonnell'
     #register(firstName, lastName, email, password)
-    data = login(email, password)
-    #print(data)
+    data = socialLogin(firstName, lastName, email)
+    #data = login(email, password)
+    print(data)
     token = data['token']
     #id = data['id']
     #print('Got token:', token)
