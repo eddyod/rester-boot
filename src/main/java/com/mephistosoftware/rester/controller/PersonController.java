@@ -22,7 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -31,7 +30,6 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.mephistosoftware.rester.security.SecurityConstants.EXPIRATION_TIME;
 import static com.mephistosoftware.rester.security.SecurityConstants.SECRET;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -76,8 +74,6 @@ public class PersonController {
 		}
 
 	}
-	// facebook token
-	// "EAAOeEUXu74kBABpBPdMynFsVybbaN24cbe3FQH9aEOnabPQkoUm8rJyp8wFHzk2Gb56ZCYimYoFWTTeNRzi1MSEilUEGuhDDNZCq1ZA9yu9Gpp6Q46egamSRIq5ZCqtvZBAhhHMG77q8t5oZATXKIFXOgdz4Rycjw5NsOLsQJapZAYhkcZBapdOytrndBSugZBfL4VZBSGPBgmSwZDZD"
 
 	/**
 	 * Test if person is in Database, if so, just return person with token
@@ -99,7 +95,6 @@ public class PersonController {
 		}
 		String returnToken = "";
 		returnToken = buildToken(token, person);
-		System.out.println("Done with social login, person token is " + returnToken);
 		return returnToken;
 
 	}
