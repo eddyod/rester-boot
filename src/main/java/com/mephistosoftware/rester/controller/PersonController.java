@@ -85,6 +85,7 @@ public class PersonController {
 	@PostMapping(SecurityConstants.SOCIAL_REGISTER)
 	public String registerSocialLogin(@Valid @RequestBody Person validatePerson) throws JsonProcessingException {
 		String email = validatePerson.getEmail();
+		System.out.println("person email is " + email);
 		String token = JWT.create().withSubject(email)
 				.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).sign(HMAC512(SECRET.getBytes()));
 
@@ -95,6 +96,7 @@ public class PersonController {
 		}
 		String returnToken = "";
 		returnToken = buildToken(token, person);
+		System.out.println("full person + token is " + returnToken);
 		return returnToken;
 
 	}
