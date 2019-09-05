@@ -34,11 +34,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // @CrossOrigin( origins = "*" )
 @RestController
 @Validated
 public class PersonController {
+	
+	Logger logger = LoggerFactory.getLogger(PersonController.class);
 
 	@Autowired
 	private PersonRepository personRepository;
@@ -85,7 +89,7 @@ public class PersonController {
 	@PostMapping(SecurityConstants.SOCIAL_REGISTER)
 	public String registerSocialLogin(@Valid @RequestBody Person validatePerson) throws JsonProcessingException {
 		String email = validatePerson.getEmail();
-		System.out.println("person email is " + email);
+		logger.warn("person email is " + email);
 		String token = JWT.create().withSubject(email)
 				.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).sign(HMAC512(SECRET.getBytes()));
 
@@ -96,7 +100,7 @@ public class PersonController {
 		}
 		String returnToken = "";
 		returnToken = buildToken(token, person);
-		System.out.println("full person + token is " + returnToken);
+		logger.warn("full person + token is " + returnToken);
 		return returnToken;
 
 	}
