@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 @RestController
 @Validated
 public class PersonController {
-	
+
 	Logger logger = LoggerFactory.getLogger(PersonController.class);
 
 	@Autowired
@@ -84,24 +84,30 @@ public class PersonController {
 	 * 
 	 * @param user object of Person
 	 * @return an Person object
-	 * @throws JsonProcessingException 
+	 * @throws JsonProcessingException
 	 */
 	@PostMapping(SecurityConstants.SOCIAL_REGISTER)
-	public String registerSocialLogin(@Valid @RequestBody Person validatePerson) throws JsonProcessingException {
-		String email = validatePerson.getEmail();
-		logger.warn("person email is " + email);
-		String token = JWT.create().withSubject(email)
-				.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).sign(HMAC512(SECRET.getBytes()));
+	public ResponseEntity<String> registerSocialLogin(@Valid @RequestBody Person validatePerson)
+			throws JsonProcessingException {
+		if (validatePerson.getEmail() != null) {
+			String email = validatePerson.getEmail();
+			logger.warn("person email is " + email);
+			String token = JWT.create().withSubject(email)
+					.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+					.sign(HMAC512(SECRET.getBytes()));
 
-		Person person = personRepository.findByEmail(email);
-		if (person == null) { 
-			validatePerson.setPersonType(SecurityConstants.TEACHER);
-			person = personRepository.save(validatePerson);
+			Person person = personRepository.findByEmail(email);
+			if (person == null) {
+				validatePerson.setPersonType(SecurityConstants.TEACHER);
+				person = personRepository.save(validatePerson);
+			}
+			String returnToken = "";
+			returnToken = buildToken(token, person);
+			logger.warn("full person + token is " + returnToken);
+			return new ResponseEntity<String>(returnToken, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("Bad email", HttpStatus.NOT_ACCEPTABLE);
 		}
-		String returnToken = "";
-		returnToken = buildToken(token, person);
-		logger.warn("full person + token is " + returnToken);
-		return returnToken;
 
 	}
 

@@ -394,7 +394,7 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'slkdjflskjd@yahoo.com'
+    email = 'eddyodX@yahoo.com'
     #password = 'j1234567'
     firstName = 'Eddy'
     lastName = 'ODonnell'
