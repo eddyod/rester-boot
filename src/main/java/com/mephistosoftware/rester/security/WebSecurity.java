@@ -55,8 +55,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.and().csrf().disable()
 		.authorizeRequests()
 		.antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
+		.antMatchers(HttpMethod.OPTIONS, SOCIAL_REGISTER).permitAll()
 		.antMatchers(HttpMethod.POST, SOCIAL_REGISTER).permitAll()
-		.antMatchers(HttpMethod.GET, "/health").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.addFilter(new JWTAuthenticationFilter(authenticationManager()))
@@ -78,7 +78,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	  CorsConfigurationSource corsConfigurationSource() { 
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.applyPermitDefaultValues();
-		configuration.setAllowedOrigins(Arrays.asList("https://www.mephistosoftware.com", "http://localhost:4200", "http://localhost:8100"));
+		configuration.setAllowedOrigins(Arrays.asList("https://www.mephistosoftware.com", "http://localhost:4200", "http://localhost:8100", "http://localhost"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); 
 		source.registerCorsConfiguration("/**", configuration); 

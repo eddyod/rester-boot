@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -87,37 +88,42 @@ public class PersonController {
 	 * @throws JsonProcessingException
 	 */
 	@PostMapping(SecurityConstants.SOCIAL_REGISTER)
-	public ResponseEntity<String> registerSocialLogin(@Valid @RequestBody Person validatePerson)
-			throws JsonProcessingException {
-		if (validatePerson.getEmail() != null) {
-			String email = validatePerson.getEmail();
+	public ResponseEntity<Person> registerSocialLogin(@Valid @RequestBody Person person) {
+		//Person person = new Person();
+		String email = person.getEmail();
+		logger.info("person email is " + email);
+		if (email != null) {
 			logger.warn("person email is " + email);
 			String token = JWT.create().withSubject(email)
 					.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
 					.sign(HMAC512(SECRET.getBytes()));
-
-			Person person = personRepository.findByEmail(email);
-			if (person == null) {
-				validatePerson.setPersonType(SecurityConstants.TEACHER);
-				person = personRepository.save(validatePerson);
+			
+			try {
+				person = personRepository.findByEmail(email);
+			} catch (NoResultException nre) {
+				return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);				
 			}
 			String returnToken = "";
 			returnToken = buildToken(token, person);
 			logger.warn("full person + token is " + returnToken);
-			return new ResponseEntity<String>(returnToken, HttpStatus.OK);
+			return new ResponseEntity<Person>(person, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<String>("Bad email", HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
 		}
 
 	}
-
-	private String buildToken(String token, Person person) throws JsonProcessingException {
+	private String buildToken(String token, Person person) {
 		String returnToken = "";
 		ObjectMapper mapper = new ObjectMapper();
 		person.setToken(token);
 		Set<Location> schools = personRepository.getSchoolsByEmployeeId(person.getId());
 		person.setSchools(schools);
-		returnToken = mapper.writeValueAsString(person);
+		try {
+			returnToken = mapper.writeValueAsString(person);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return returnToken;
 	}
 
