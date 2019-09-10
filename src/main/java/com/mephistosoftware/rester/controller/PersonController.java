@@ -88,30 +88,39 @@ public class PersonController {
 	 * @throws JsonProcessingException
 	 */
 	@PostMapping(SecurityConstants.SOCIAL_REGISTER)
-	public ResponseEntity<Person> registerSocialLogin(@Valid @RequestBody Person person) {
-		//Person person = new Person();
-		String email = person.getEmail();
+	public ResponseEntity<Person> registerSocialLogin(@Valid @RequestBody Person validatePerson) {
+		Person person = new Person();
+		String email = validatePerson.getEmail();
 		logger.info("person email is " + email);
 		if (email != null) {
-			logger.warn("person email is " + email);
 			String token = JWT.create().withSubject(email)
 					.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
 					.sign(HMAC512(SECRET.getBytes()));
-			
-			try {
-				person = personRepository.findByEmail(email);
-			} catch (NoResultException nre) {
-				return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);				
+
+			person = personRepository.findByEmail(email);
+
+			if (person == null) {
+				logger.warn("No person with that email.");
+
+				try {
+					validatePerson.setActive(true);
+					validatePerson.setPersonType(SecurityConstants.TEACHER);
+					person = personRepository.save(validatePerson);
+				} catch (PersistenceException pe) {
+					logger.error(pe.getMessage());
+				}
 			}
+
 			String returnToken = "";
 			returnToken = buildToken(token, person);
-			logger.warn("full person + token is " + returnToken);
+			logger.info("full person + token is " + returnToken);
 			return new ResponseEntity<Person>(person, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
 		}
 
 	}
+
 	private String buildToken(String token, Person person) {
 		String returnToken = "";
 		ObjectMapper mapper = new ObjectMapper();
@@ -121,8 +130,7 @@ public class PersonController {
 		try {
 			returnToken = mapper.writeValueAsString(person);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return returnToken;
 	}

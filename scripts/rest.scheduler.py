@@ -362,15 +362,13 @@ def register(firstName, lastName, email, password):
     except:
         print('Registering failed')
 
-def socialLogin(firstName, lastName, email):
-    url = API_URL + '/social-login'
+def socialLogin(email, firstName, lastName):
+    url = '{}/social-login'.format(API_URL)
     data = ''
-    params = dict(
-        firstName=firstName,
-        lastName=lastName,
-        email=email)
+    params = dict(email=email, firstName=firstName, lastName=lastName)
     try:
         resp = requests.post(url=url, json=params)
+        print(resp)
         data = resp.json()  # Check the JSON Response Content documentation below
     except:
         data = 'Social login failed'
@@ -394,14 +392,14 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'eddyodX@yahoo.com'
+    email = 'eddyod@yahoo.com'
     #password = 'j1234567'
     firstName = 'Eddy'
     lastName = 'ODonnell'
     #token = facebookToken
     lastName = 'ODonnell'
     #register(firstName, lastName, email, password)
-    data = socialLogin(firstName, lastName, email)
+    data = socialLogin(email, firstName, lastName)
     #data = login(email, password)
     print(data)
     token = data['token']
