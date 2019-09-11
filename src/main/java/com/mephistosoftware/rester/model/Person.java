@@ -1,6 +1,8 @@
 package com.mephistosoftware.rester.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -143,6 +145,16 @@ public class Person  extends AuditModel {
 			name.append(this.firstName);
 		}
 		return name.toString();
+	}
+	
+	@Transient
+	public Long getSchoolId() {
+		Long schoolId = 0l;
+		if (this.schools.size() > 0) {
+			List<Location> l = new ArrayList<>(this.schools);
+			schoolId = l.get(0).getId();
+		}
+		return schoolId;
 	}
 
 	@ManyToMany(cascade = CascadeType.ALL)

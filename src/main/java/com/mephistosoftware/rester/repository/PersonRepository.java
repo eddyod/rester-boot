@@ -18,8 +18,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
 	Person findByEmail(String email);
 
-	@Query(value = "select p from Person p where p.personType = :teacher order by p.lastName, p.firstName")
-	List<Person> findAllEmployees(@Param("teacher") Integer teacher);
+	@Query(value = "select p from Person p where p.personType = :personType order by p.lastName, p.firstName")
+	List<Person> findAllEmployees(@Param("personType") Integer personType);
 	
 	@Query(value = "select p from Person p where p.personType = :teacher order by p.lastName, p.firstName")
 	Page<Person> findPagedEmployees(@Param("teacher") Integer teacher, Pageable pageable);

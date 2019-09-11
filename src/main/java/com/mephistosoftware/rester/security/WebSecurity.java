@@ -20,7 +20,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static com.mephistosoftware.rester.security.SecurityConstants.SIGN_UP_URL;
-import static com.mephistosoftware.rester.security.SecurityConstants.SOCIAL_REGISTER;
+import static com.mephistosoftware.rester.security.SecurityConstants.APP_REGISTER;
+import static com.mephistosoftware.rester.security.SecurityConstants.WEBSITE_REGISTER;
+
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -55,8 +57,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.and().csrf().disable()
 		.authorizeRequests()
 		.antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-		.antMatchers(HttpMethod.OPTIONS, SOCIAL_REGISTER).permitAll()
-		.antMatchers(HttpMethod.POST, SOCIAL_REGISTER).permitAll()
+		.antMatchers(HttpMethod.OPTIONS, APP_REGISTER).permitAll()
+		.antMatchers(HttpMethod.POST, APP_REGISTER).permitAll()
+		.antMatchers(HttpMethod.OPTIONS, WEBSITE_REGISTER).permitAll()
+		.antMatchers(HttpMethod.POST, WEBSITE_REGISTER).permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.addFilter(new JWTAuthenticationFilter(authenticationManager()))
@@ -78,7 +82,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	  CorsConfigurationSource corsConfigurationSource() { 
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.applyPermitDefaultValues();
-		configuration.setAllowedOrigins(Arrays.asList("https://www.mephistosoftware.com", "http://localhost:4200", "http://localhost:8100", "http://localhost"));
+		configuration.setAllowedOrigins(Arrays.asList("https://www.mephistosoftware.com", "http://localhost:4200", "http://localhost:8100", "http://10.195.4.147:4200" ));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); 
 		source.registerCorsConfiguration("/**", configuration); 

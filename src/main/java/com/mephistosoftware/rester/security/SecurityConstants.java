@@ -7,10 +7,12 @@ public class SecurityConstants {
     public static final String TOKEN_PREFIX = "JWT ";
     public static final String HEADER_STRING = "Authorization";
     public static final String SIGN_UP_URL = "/register";
-    public static final String SOCIAL_REGISTER = "/social-login";
+    public static final String APP_REGISTER = "/app-login";
+    public static final String WEBSITE_REGISTER = "/website-login";
     public static final String TOKEN = "token";
-    public static final Integer ADMIN = 1;
+    public static final Integer UNASSIGNED = 0;
+    public static final Integer TEACHER = 1;
     public static final Integer SCHOOL = 2;
-    public static final Integer TEACHER = 3;
+    public static final Integer ADMIN = 999;
 
 }

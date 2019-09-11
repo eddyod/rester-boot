@@ -22,14 +22,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-import static com.mephistosoftware.rester.security.SecurityConstants.EXPIRATION_TIME;
-import static com.mephistosoftware.rester.security.SecurityConstants.SECRET;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -81,21 +78,17 @@ public class PersonController {
 	}
 
 	/**
-	 * Test if person is in Database, if so, just return person with token
-	 * 
+	 * Test if person is in Database, if not, insert as teacher
 	 * @param user object of Person
-	 * @return an Person object
-	 * @throws JsonProcessingException
+	 * @return an ResponseEntity Person object
 	 */
-	@PostMapping(SecurityConstants.SOCIAL_REGISTER)
-	public ResponseEntity<Person> registerSocialLogin(@Valid @RequestBody Person validatePerson) {
+	@PostMapping(SecurityConstants.APP_REGISTER)
+	public ResponseEntity<Person> registerAppLogin(@Valid @RequestBody Person validatePerson) {
 		Person person = new Person();
 		String email = validatePerson.getEmail();
 		logger.info("person email is " + email);
 		if (email != null) {
-			String token = JWT.create().withSubject(email)
-					.withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-					.sign(HMAC512(SECRET.getBytes()));
+			String token = buildJwtToken(email);
 
 			person = personRepository.findByEmail(email);
 
@@ -119,6 +112,48 @@ public class PersonController {
 			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
 		}
 
+	}
+
+	/**
+	 * Test if person is in Database, if not, insert as teacher
+	 * @param user object of Person
+	 * @return an ResponseEntity Person object
+	 */
+	@PostMapping(SecurityConstants.WEBSITE_REGISTER)
+	public ResponseEntity<Person> registerWebsiteLogin(@Valid @RequestBody Person validatePerson) {
+		Person person = new Person();
+		String email = validatePerson.getEmail();
+		logger.info("person email is " + email);
+		if (email != null) {
+			String token = buildJwtToken(email);
+			person = personRepository.findByEmail(email);
+
+			if (person == null) {
+				logger.warn("No person with that email.");
+
+				try {
+					validatePerson.setActive(true);
+					validatePerson.setPersonType(SecurityConstants.UNASSIGNED);
+					person = personRepository.save(validatePerson);
+				} catch (PersistenceException pe) {
+					logger.error(pe.getMessage());
+				}
+			}
+
+			String returnToken = "";
+			returnToken = buildToken(token, person);
+			logger.info("full person + token is " + returnToken);
+			return new ResponseEntity<Person>(person, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
+		}
+
+	}
+	
+	private String buildJwtToken(String email) {
+		return JWT.create().withSubject(email)
+				.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+				.sign(HMAC512(SecurityConstants.SECRET.getBytes()));		
 	}
 
 	private String buildToken(String token, Person person) {
@@ -153,13 +188,31 @@ public class PersonController {
 
 	/**
 	 * Gets only employees
-	 * 
 	 * @return list of people
 	 */
 	@GetMapping("/employees")
 	public List<Person> getEmployees() {
 		return personRepository.findAllEmployees(SecurityConstants.TEACHER);
 	}
+
+	/**
+	 * Gets only unassigned
+	 * @return list of people
+	 */
+	@GetMapping("/unassigned")
+	public List<Person> getUnassignedPersons() {
+		return personRepository.findAllEmployees(SecurityConstants.UNASSIGNED);
+	}
+
+	/**
+	 * Gets only unassigned
+	 * @return list of people
+	 */
+	@GetMapping("/school-admins")
+	public List<Person> getSchoolAdmins() {
+		return personRepository.findAllEmployees(SecurityConstants.SCHOOL);
+	}
+	
 
 	/**
 	 * Gets only employees
@@ -208,6 +261,7 @@ public class PersonController {
 			person.setEmail(personRequest.getEmail());
 			person.setAddress(personRequest.getAddress());
 			person.setActive(personRequest.getActive());
+			person.setPersonType(personRequest.getPersonType());
 			return personRepository.save(person);
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
