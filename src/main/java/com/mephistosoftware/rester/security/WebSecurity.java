@@ -82,7 +82,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	  CorsConfigurationSource corsConfigurationSource() { 
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.applyPermitDefaultValues();
-		configuration.setAllowedOrigins(Arrays.asList("https://www.mephistosoftware.com", "http://localhost:4200", "http://localhost:8100", "http://10.195.4.147:4200" ));
+		configuration.setAllowedOrigins(Arrays.asList("https://www.mephistosoftware.com", "http://localhost:4200", "http://localhost:8100", "http://10.195.4.147:4200", "http://localhost" ));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); 
 		source.registerCorsConfiguration("/**", configuration); 
