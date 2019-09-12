@@ -20,17 +20,18 @@ public class ServiceTests {
 	@Autowired
 	PersonRepository personRepository;
 
+	/*
 	@Test
 	public void testCreateReadDelete() {
 		
-		String email = "eodonnell@ucsd.edu";
+		String email = "jasonodonnell@ucsd.edu";
 
 		Person user = new Person();
-		user.setFirstName("Edward");
+		user.setFirstName("Jason");
 		user.setLastName("OD");
 		user.setEmail(email);
-		user.setPhone("1234567");
-		user.setPassword("1234567");
+		user.setPhone("123-4567");
+		user.setPassword("j1234567");
 
 		personRepository.save(user);
 		
@@ -40,4 +41,5 @@ public class ServiceTests {
 		personRepository.deleteAll();
 		Assertions.assertThat(personRepository.findAll()).isEmpty();
 	}
+	*/
 }
