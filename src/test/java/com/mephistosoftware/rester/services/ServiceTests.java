@@ -19,6 +19,11 @@ public class ServiceTests {
 
 	@Autowired
 	PersonRepository personRepository;
+	
+	@Test
+	public void doNothing() {
+		Assertions.assertThat(1).equals(1);
+	}
 
 	/*
 	@Test
