@@ -86,8 +86,8 @@ def fillEmployee(token):
     url = API_URL + '/employee'
     fake = Faker()
     params = dict(
-        firstName=fake.firstName(),
-        lastName=fake.lastName(),
+        firstName=fake.first_name(),
+        lastName=fake.last_name(),
         email=fake.email(),
         phone=fake.phone_number(),
         address=fake.street_address()
@@ -354,7 +354,7 @@ def register(firstName, lastName, email, password):
         lastName=lastName,
         email=email,
         password=password,
-        personType = 1)
+        personType = 999)
     try:
         resp = requests.post(url=url, json=params)
         data = resp.json()  # Check the JSON Response Content documentation below
@@ -392,15 +392,15 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'eddyod@yahoo.com'
-    #password = 'j1234567'
-    firstName = 'Eddy'
+    email = 'jasonodonnell@yahoo.com'
+    password = 'j1234567'
+    firstName = 'Jason'
     lastName = 'ODonnell'
     #token = facebookToken
     lastName = 'ODonnell'
     #register(firstName, lastName, email, password)
-    data = socialLogin(email, firstName, lastName)
-    #data = login(email, password)
+    #data = socialLogin(email, firstName, lastName)
+    data = login(email, password)
     print(data)
     token = data['token']
     #id = data['id']
@@ -411,20 +411,20 @@ def main():
     #insertEmployee(firstName, lastName, "joe", token)
 
     
-    for i in range(0):
+    for i in range(13):
 
-        #_ = fillEmployee(token)
+        _ = fillEmployee(token)
         _ = fillLocation(token)
 
-        #locationId = getRandomLocationId(token)
+        locationId = getRandomLocationId(token)
         #updateLocation(token, locationId)
 
-        #personId = getRandomEmployeeId(token)
+        personId = getRandomEmployeeId(token)
         #updateEmployee(token, personId)
 
-        #fills = random.randint(2, 5)
-        # print(personId, locationId)
-        #addSchedule(personId, locationId, fills, token)
+        fills = random.randint(2, 5)
+        print(personId, locationId)
+        addSchedule(personId, locationId, fills, token)
         #getEmployeeSchedule(token, personId)
         # getLocationSchedule(token, locationId)
 

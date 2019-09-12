@@ -160,8 +160,8 @@ public class PersonController {
 		String returnToken = "";
 		ObjectMapper mapper = new ObjectMapper();
 		person.setToken(token);
-		Set<Location> schools = personRepository.getSchoolsByEmployeeId(person.getId());
-		person.setSchools(schools);
+		// Set<Location> schools = personRepository.getSchoolsByEmployeeId(person.getId());
+		// person.setSchools(schools);
 		try {
 			returnToken = mapper.writeValueAsString(person);
 		} catch (JsonProcessingException e) {
@@ -262,6 +262,7 @@ public class PersonController {
 			person.setAddress(personRequest.getAddress());
 			person.setActive(personRequest.getActive());
 			person.setPersonType(personRequest.getPersonType());
+			person.setSchoolId(personRequest.getSchoolId());
 			return personRepository.save(person);
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
@@ -275,6 +276,7 @@ public class PersonController {
 
 	}
 
+	/*
 	@PostMapping("/employee/{employeeId}/{locationId}")
 	public Person attachEmployeeSchool(@PathVariable @Min(1) Long employeeId, @PathVariable @Min(1) Long locationId) {
 		Set<Location> schools = new HashSet<>();
@@ -286,5 +288,6 @@ public class PersonController {
 			}).orElseThrow(() -> new ResourceNotFoundException("Location not found with id " + locationId));
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + employeeId));
 	}
+	*/
 
 }

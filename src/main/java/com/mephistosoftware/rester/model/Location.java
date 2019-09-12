@@ -25,7 +25,7 @@ public class Location extends AuditModel {
     private String phone;
     private BigDecimal latitude;
     private BigDecimal longitude;
-    private Set<Person> employees = new HashSet<>();
+    // private Set<Person> employees = new HashSet<>();
 
 	@NotEmpty(message = "Name cannot be empty")
 	public String getName() {
@@ -87,6 +87,7 @@ public class Location extends AuditModel {
 		this.address = address;
 	}
 
+	/*
 	@ManyToMany(mappedBy = "schools")
 	@JsonIgnore
 	public Set<Person> getEmployees() {
@@ -96,6 +97,7 @@ public class Location extends AuditModel {
 	public void setEmployees(Set<Person> employees) {
 		this.employees = employees;
 	}
+	*/
 	
 	/*
 	@OneToMany(mappedBy="person", fetch = FetchType.LAZY)

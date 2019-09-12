@@ -32,7 +32,8 @@ public class Person  extends AuditModel {
 	private Boolean active = Boolean.TRUE;
 	private String token;
 	private Integer personType = SecurityConstants.TEACHER;
-    private Set<Location> schools = new HashSet<>();
+	private Integer schoolId;
+	private Location school;
 
 	public Person() {}
 	
@@ -146,29 +147,26 @@ public class Person  extends AuditModel {
 		}
 		return name.toString();
 	}
-	
-	@Transient
-	public Long getSchoolId() {
-		Long schoolId = 0l;
-		if (this.schools.size() > 0) {
-			List<Location> l = new ArrayList<>(this.schools);
-			schoolId = l.get(0).getId();
-		}
+
+	@Column(name = "school_id")
+	public Integer getSchoolId() {
 		return schoolId;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "employee_school", joinColumns = { 
-			@JoinColumn(name = "employee_id", nullable = true, updatable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "location_id", 
-					nullable = true, updatable = false) })
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	public Set<Location> getSchools() {
-		return schools;
+	public void setSchoolId(Integer schoolId) {
+		this.schoolId = schoolId;
 	}
 
-	public void setSchools(Set<Location> schools) {
-		this.schools = schools;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id", referencedColumnName = "id", updatable = false, insertable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})	
+	public Location getSchool() {
+		return school;
+	}
+
+	public void setSchool(Location school) {
+		this.school = school;
 	}
 
 

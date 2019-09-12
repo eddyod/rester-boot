@@ -63,8 +63,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		if (personRepository != null) {
 			person = personRepository.findByEmail(email);
 			person.setToken(token);
-			Set<Location> schools = personRepository.getSchoolsByEmployeeId(person.getId());
-			person.setSchools(schools);
+			// Set<Location> schools = personRepository.getSchoolsByEmployeeId(person.getId());
+			// person.setSchools(schools);
 			returnToken = mapper.writeValueAsString(person);
 		} else {
 			System.out.println("repo IS NULL ");			

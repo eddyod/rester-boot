@@ -24,7 +24,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 	@Query(value = "select p from Person p where p.personType = :teacher order by p.lastName, p.firstName")
 	Page<Person> findPagedEmployees(@Param("teacher") Integer teacher, Pageable pageable);
 
-	@Query(value = "select p.schools from Person p where p.id = :id")
-	Set<Location> getSchoolsByEmployeeId(@Param("id") Long id);
+	// @Query(value = "select p.schools from Person p where p.id = :id")
+	// Set<Location> getSchoolsByEmployeeId(@Param("id") Long id);
 	
 }
