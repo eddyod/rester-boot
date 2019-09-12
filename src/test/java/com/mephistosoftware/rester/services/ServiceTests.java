@@ -22,7 +22,7 @@ public class ServiceTests {
 	
 	@Test
 	public void doNothing() {
-		Assertions.assertThat(1).equals(1);
+		Assertions.assertThat(1).isEqualTo(1);
 	}
 
 	/*
