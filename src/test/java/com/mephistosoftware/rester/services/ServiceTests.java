@@ -25,11 +25,11 @@ public class ServiceTests {
 		Assertions.assertThat(1).isEqualTo(1);
 	}
 
-	/*
+	
 	@Test
 	public void testCreateReadDelete() {
 		
-		String email = "jasonodonnell@ucsd.edu";
+		String email = "jasonodonnell@yahoo.com";
 
 		Person user = new Person();
 		user.setFirstName("Jason");
@@ -38,13 +38,13 @@ public class ServiceTests {
 		user.setPhone("123-4567");
 		user.setPassword("j1234567");
 
-		personRepository.save(user);
+		// personRepository.save(user);
 		
 		Iterable<Person> users = personRepository.findAll();
 		Assertions.assertThat(users).extracting(Person::getEmail).contains(email);
 		
-		personRepository.deleteAll();
-		Assertions.assertThat(personRepository.findAll()).isEmpty();
+		// personRepository.deleteAll();
+		// Assertions.assertThat(personRepository.findAll()).isEmpty();
 	}
-	*/
+	
 }
