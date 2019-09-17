@@ -9,9 +9,9 @@ fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
 #facebookToken = "EAAOeEUXu74kBABpBPdMynFsVybbaN24cbe3FQH9aEOnabPQkoUm8rJyp8wFHzk2Gb56ZCYimYoFWTTeNRzi1MSEilUEGuhDDNZCq1ZA9yu9Gpp6Q46egamSRIq5ZCqtvZBAhhHMG77q8t5oZATXKIFXOgdz4Rycjw5NsOLsQJapZAYhkcZBapdOytrndBSugZBfL4VZBSGPBgmSwZDZD"
 
-#API_URL = "http://www.mephistosoftware.com/premier-rester"
-API_URL = "http://10.195.4.147:8090"
-#API_URL = "http://localhost:8090"
+API_URL = "http://www.mephistosoftware.com/premier-rester"
+#API_URL = "http://10.195.4.147:8090"
+API_URL = "http://localhost:8090"
 
 def fillSchedule(personId, locationId, amount, token):
     url = '{}/schedule'.format(API_URL)
@@ -259,6 +259,7 @@ def getEmployees(token):
 
 def testEmployees(token):
     resp = requests.get(API_URL + '/employees', headers={'Authorization': 'JWT {}'.format(token)})
+    print(resp)
     for _item in resp.json():
         print('Employee: {} {}'.format(_item['id'], _item['name']))
 
@@ -290,7 +291,7 @@ def testSchedules(token):
     else:
         for _item in resp.json():
             # print(_item)
-            print('Schedule: {} {} {} {} {} {}'.format(_item['title'], _item['id'], _item['start'], _item['end'], _item['person']['name'], _item['location']['name']))
+            print('Schedule: {} {} {} {}'.format(_item['title'], _item['start'], _item['person']['name'], _item['location']['name']))
 
 
 def testTodaySchedules(token, id):
@@ -397,7 +398,6 @@ def main():
     firstName = 'Jason'
     lastName = 'ODonnell'
     #token = facebookToken
-    lastName = 'ODonnell'
     #register(firstName, lastName, email, password)
     #data = socialLogin(email, firstName, lastName)
     data = login(email, password)
@@ -411,7 +411,7 @@ def main():
     #insertEmployee(firstName, lastName, "joe", token)
 
     
-    for i in range(13):
+    for i in range(0):
 
         _ = fillEmployee(token)
         _ = fillLocation(token)
@@ -439,6 +439,7 @@ def main():
     #attachEmployeeSchool(token, personId, locationId)
     testEmployees(token)
     #testLocations(token)
+    print()
     #testSchedules(token)
     #testTodaySchedules(token, 1)
     #person = getCurrentUser(token, id)

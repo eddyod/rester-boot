@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mephistosoftware.rester.exception.ResourceNotFoundException;
-import com.mephistosoftware.rester.model.Location;
 import com.mephistosoftware.rester.model.Person;
 import com.mephistosoftware.rester.repository.LocationRepository;
 import com.mephistosoftware.rester.repository.OffsetBasedPageRequest;
@@ -29,9 +28,7 @@ import javax.validation.constraints.Min;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +42,6 @@ public class PersonController {
 	@Autowired
 	private PersonRepository personRepository;
 
-	@Autowired
-	private LocationRepository locationRepository;
 
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
