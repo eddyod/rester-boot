@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mephistosoftware.rester.exception.ResourceNotFoundException;
 import com.mephistosoftware.rester.model.Person;
-import com.mephistosoftware.rester.repository.LocationRepository;
 import com.mephistosoftware.rester.repository.OffsetBasedPageRequest;
 import com.mephistosoftware.rester.repository.PersonRepository;
 import com.mephistosoftware.rester.security.SecurityConstants;
