@@ -10,8 +10,8 @@ fake.seed(random.randint(10**9, 10**10-1))
 #facebookToken = "EAAOeEUXu74kBABpBPdMynFsVybbaN24cbe3FQH9aEOnabPQkoUm8rJyp8wFHzk2Gb56ZCYimYoFWTTeNRzi1MSEilUEGuhDDNZCq1ZA9yu9Gpp6Q46egamSRIq5ZCqtvZBAhhHMG77q8t5oZATXKIFXOgdz4Rycjw5NsOLsQJapZAYhkcZBapdOytrndBSugZBfL4VZBSGPBgmSwZDZD"
 
 #API_URL = "http://www.mephistosoftware.com/premier-rester"
-API_URL = "http://10.195.4.147:8090"
-#API_URL = "http://localhost:8090"
+#API_URL = "http://10.195.4.147:8090"
+API_URL = "http://localhost:8090"
 
 def fillSchedule(personId, locationId, amount, token):
     url = '{}/schedule'.format(API_URL)
