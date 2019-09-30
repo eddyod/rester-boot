@@ -393,14 +393,14 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'jasonodonnell@yahoo.com'
+    email = 'eddyod@yahoo.com'
     password = 'j1234567'
     firstName = 'Jason'
     lastName = 'ODonnell'
     #token = facebookToken
     #register(firstName, lastName, email, password)
-    #data = socialLogin(email, firstName, lastName)
-    data = login(email, password)
+    data = socialLogin(email, firstName, lastName)
+    #data = login(email, password)
     print(data)
     token = data['token']
     #id = data['id']
