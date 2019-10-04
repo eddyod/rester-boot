@@ -228,9 +228,28 @@ public class PersonController {
 	 * @return the person object
 	 */
 	@PostMapping("/employee")
-	public ResponseEntity<Person> addEmployeeXX(@Valid @RequestBody Person person) {
+	public ResponseEntity<Person> addTeacher(@Valid @RequestBody Person person) {
 		person.setActive(true);
 		person.setPersonType(SecurityConstants.TEACHER);
+		try {
+			personRepository.save(person);
+		} catch (DataIntegrityViolationException re) {
+			throw new DataIntegrityViolationException("Redundant email");
+		} catch (PersistenceException pe) {
+			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
+		}
+		return new ResponseEntity<Person>(person, HttpStatus.OK);
+	}
+	/**
+	 * Add employee with specific employee settings
+	 * 
+	 * @param person json object of person
+	 * @return the person object
+	 */
+	@PostMapping("/school-admin")
+	public ResponseEntity<Person> addSchoolAdmin(@Valid @RequestBody Person person) {
+		person.setActive(true);
+		person.setPersonType(SecurityConstants.SCHOOL);
 		try {
 			personRepository.save(person);
 		} catch (DataIntegrityViolationException re) {
