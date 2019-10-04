@@ -110,6 +110,7 @@ public class PersonController {
 
 	/**
 	 * Test if person is in Database, if not, insert as teacher
+	 * not used
 	 * @param user object of Person
 	 * @return an ResponseEntity Person object
 	 */
@@ -278,6 +279,13 @@ public class PersonController {
 			person.setSchoolId(personRequest.getSchoolId());
 			person.setPicture(personRequest.getPicture());
 			return personRepository.save(person);
+		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
+	}
+
+	@PatchMapping("/person/{id}")
+	public Person patchPerson(@PathVariable @Min(1) Long id, @Valid @RequestBody Person personRequest) {
+		return personRepository.findById(id).map(person -> {
+			return personRepository.save(personRequest);
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
 
