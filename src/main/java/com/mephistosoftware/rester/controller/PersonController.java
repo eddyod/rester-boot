@@ -241,7 +241,7 @@ public class PersonController {
 		return new ResponseEntity<Person>(person, HttpStatus.OK);
 	}
 	/**
-	 * Add employee with specific employee settings
+	 * Add school admin with specific employee settings
 	 * 
 	 * @param person json object of person
 	 * @return the person object
