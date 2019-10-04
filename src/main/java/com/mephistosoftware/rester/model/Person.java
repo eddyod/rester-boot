@@ -1,10 +1,5 @@
 package com.mephistosoftware.rester.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -31,6 +26,7 @@ public class Person  extends AuditModel {
 	private String address;
 	private Boolean active = Boolean.TRUE;
 	private String token;
+	private String picture;
 	private Integer personType = SecurityConstants.TEACHER;
 	private Integer schoolId;
 	private Location school;
@@ -112,6 +108,14 @@ public class Person  extends AuditModel {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 
 	@NotNull(message = "Person must have a role.")
