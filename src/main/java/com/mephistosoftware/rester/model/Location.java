@@ -1,16 +1,11 @@
 package com.mephistosoftware.rester.model;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
