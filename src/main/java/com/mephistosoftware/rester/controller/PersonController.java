@@ -76,7 +76,7 @@ public class PersonController {
 	 * @param user object of Person
 	 * @return an ResponseEntity Person object
 	 */
-	@PostMapping(SecurityConstants.APP_REGISTER)
+	@PostMapping(SecurityConstants.APP_LOGIN)
 	public ResponseEntity<Person> registerAppLogin(@Valid @RequestBody Person validatePerson) {
 		Person person = new Person();
 		String email = validatePerson.getEmail();
@@ -86,6 +86,7 @@ public class PersonController {
 
 			person = personRepository.findByEmail(email);
 
+			// person is not in, so add them.
 			if (person == null) {
 				logger.warn("No person with that email.");
 
@@ -93,6 +94,14 @@ public class PersonController {
 					validatePerson.setActive(true);
 					validatePerson.setPersonType(SecurityConstants.TEACHER);
 					person = personRepository.save(validatePerson);
+				} catch (PersistenceException pe) {
+					logger.error(pe.getMessage());
+				}
+			} else {
+				
+				person.setPicture(validatePerson.getPicture());
+				try {
+					person = personRepository.save(person);
 				} catch (PersistenceException pe) {
 					logger.error(pe.getMessage());
 				}
@@ -122,7 +131,7 @@ public class PersonController {
 		if (email != null) {
 			String token = buildJwtToken(email);
 			person = personRepository.findByEmail(email);
-
+			
 			if (person == null) {
 				logger.warn("No person with that email.");
 

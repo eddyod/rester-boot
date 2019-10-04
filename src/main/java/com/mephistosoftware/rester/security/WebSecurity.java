@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import static com.mephistosoftware.rester.security.SecurityConstants.SIGN_UP_URL;
-import static com.mephistosoftware.rester.security.SecurityConstants.APP_REGISTER;
+import static com.mephistosoftware.rester.security.SecurityConstants.APP_LOGIN;
 import static com.mephistosoftware.rester.security.SecurityConstants.WEBSITE_REGISTER;
 
 
@@ -57,8 +57,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.and().csrf().disable()
 		.authorizeRequests()
 		.antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-		.antMatchers(HttpMethod.OPTIONS, APP_REGISTER).permitAll()
-		.antMatchers(HttpMethod.POST, APP_REGISTER).permitAll()
+		.antMatchers(HttpMethod.OPTIONS, APP_LOGIN).permitAll()
+		.antMatchers(HttpMethod.POST, APP_LOGIN).permitAll()
 		.antMatchers(HttpMethod.OPTIONS, WEBSITE_REGISTER).permitAll()
 		.antMatchers(HttpMethod.POST, WEBSITE_REGISTER).permitAll()
 		.anyRequest().authenticated()
