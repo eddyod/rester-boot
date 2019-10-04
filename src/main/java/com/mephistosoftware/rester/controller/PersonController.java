@@ -286,7 +286,7 @@ public class PersonController {
 			person.setActive(personRequest.getActive());
 			person.setPersonType(personRequest.getPersonType());
 			person.setSchoolId(personRequest.getSchoolId());
-			person.setPicture(personRequest.getPicture());
+			// person.setPicture(personRequest.getPicture());
 			return personRepository.save(person);
 		}).orElseThrow(() -> new ResourceNotFoundException("Person not found with id " + id));
 	}
