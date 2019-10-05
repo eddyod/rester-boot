@@ -76,69 +76,29 @@ public class PersonController {
 	 * @param user object of Person
 	 * @return an ResponseEntity Person object
 	 */
-	@PostMapping(SecurityConstants.APP_LOGIN)
+	@PostMapping(SecurityConstants.SOCIAL_LOGIN)
 	public ResponseEntity<Person> registerAppLogin(@Valid @RequestBody Person validatePerson) {
 		Person person = new Person();
 		String email = validatePerson.getEmail();
 		logger.info("person email is " + email);
 		if (email != null) {
 			String token = buildJwtToken(email);
-
 			person = personRepository.findByEmail(email);
 
 			// person is not in, so add them.
 			if (person == null) {
 				logger.warn("No person with that email.");
-
-				try {
-					validatePerson.setActive(true);
-					validatePerson.setPersonType(SecurityConstants.TEACHER);
-					person = personRepository.save(validatePerson);
-				} catch (PersistenceException pe) {
-					logger.error(pe.getMessage());
-				}
-			} else {
-				
-				person.setPicture(validatePerson.getPicture());
-				try {
-					person = personRepository.save(person);
-				} catch (PersistenceException pe) {
-					logger.error(pe.getMessage());
-				}
-			}
-
-			String returnToken = "";
-			returnToken = buildToken(token, person);
-			logger.info("full person + token is " + returnToken);
-			return new ResponseEntity<Person>(person, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<Person>(person, HttpStatus.NOT_ACCEPTABLE);
-		}
-
-	}
-
-	/**
-	 * Test if person is in Database, if not, insert as teacher
-	 * not used
-	 * @param user object of Person
-	 * @return an ResponseEntity Person object
-	 */
-	@PostMapping(SecurityConstants.WEBSITE_REGISTER)
-	public ResponseEntity<Person> registerWebsiteLogin(@Valid @RequestBody Person validatePerson) {
-		Person person = new Person();
-		String email = validatePerson.getEmail();
-		logger.info("person email is " + email);
-		if (email != null) {
-			String token = buildJwtToken(email);
-			person = personRepository.findByEmail(email);
-			
-			if (person == null) {
-				logger.warn("No person with that email.");
-
 				try {
 					validatePerson.setActive(true);
 					validatePerson.setPersonType(SecurityConstants.UNASSIGNED);
 					person = personRepository.save(validatePerson);
+				} catch (PersistenceException pe) {
+					logger.error(pe.getMessage());
+				}
+			} else {				
+				person.setPicture(validatePerson.getPicture());
+				try {
+					person = personRepository.save(person);
 				} catch (PersistenceException pe) {
 					logger.error(pe.getMessage());
 				}
@@ -164,8 +124,6 @@ public class PersonController {
 		String returnToken = "";
 		ObjectMapper mapper = new ObjectMapper();
 		person.setToken(token);
-		// Set<Location> schools = personRepository.getSchoolsByEmployeeId(person.getId());
-		// person.setSchools(schools);
 		try {
 			returnToken = mapper.writeValueAsString(person);
 		} catch (JsonProcessingException e) {
