@@ -363,10 +363,10 @@ def register(firstName, lastName, email, password):
     except:
         print('Registering failed')
 
-def socialLogin(email, firstName, lastName):
+def socialLogin(email, firstName, lastName, picture):
     url = '{}/app-login'.format(API_URL)
     data = ''
-    params = dict(email=email, firstName=firstName, lastName=lastName)
+    params = dict(email=email, firstName=firstName, lastName=lastName, picture=picture)
     try:
         resp = requests.post(url=url, json=params)
         print(resp)
@@ -399,8 +399,8 @@ def main():
     lastName = 'ODonnell'
     #token = facebookToken
     #register(firstName, lastName, email, password)
-    #data = socialLogin(email, firstName, lastName)
-    data = login(email, password)
+    data = socialLogin(email, firstName, lastName, 'https://graph.facebook.com/10157442501205970/picture?type=normal')
+    #data = login(email, password)
     print(data)
     token = data['token']
     #id = data['id']
