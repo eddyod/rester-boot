@@ -9,8 +9,6 @@ fake = Faker()
 fake.seed(random.randint(10**9, 10**10-1))
 #facebookToken = "EAAOeEUXu74kBABpBPdMynFsVybbaN24cbe3FQH9aEOnabPQkoUm8rJyp8wFHzk2Gb56ZCYimYoFWTTeNRzi1MSEilUEGuhDDNZCq1ZA9yu9Gpp6Q46egamSRIq5ZCqtvZBAhhHMG77q8t5oZATXKIFXOgdz4Rycjw5NsOLsQJapZAYhkcZBapdOytrndBSugZBfL4VZBSGPBgmSwZDZD"
 
-#API_URL = "http://www.mephistosoftware.com/premier-rester"
-#API_URL = "http://10.195.4.147:8090"
 API_URL = "http://localhost:8090"
 
 def fillSchedule(personId, locationId, amount, token):
@@ -393,10 +391,10 @@ def getRandomStartEnd():
 
 def main():
     """Main method"""
-    email = 'jasonodonnell@yahoo.com'
+    email = 'xxx@yahoo.com'
     password = 'j1234567'
-    firstName = 'Jason'
-    lastName = 'ODonnell'
+    firstName = 'Joe'
+    lastName = 'User'
     #token = facebookToken
     #register(firstName, lastName, email, password)
     data = socialLogin(email, firstName, lastName, 'https://graph.facebook.com/10157442501205970/picture?type=normal')
